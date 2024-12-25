@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Bucket
+   uuid = "BE232BED-3E4F-4335-A823-23D5B8533C17"
+   type = "0"
+   version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "EDED8CE9-19A5-48FE-A81C-4537BC790950"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Pods/SwiftyDraw/Source/SwiftyDraw.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "222"
+            endingLineNumber = "222"
+            landmarkName = "touchesMoved(_:with:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "DDF88D95-EC6F-485A-98F5-8111B1217B4D"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "TracingApp/ViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "161"
+            endingLineNumber = "161"
+            landmarkName = "swiftyDraw(didFinishDrawingIn:using:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "DDF88D95-EC6F-485A-98F5-8111B1217B4D - f1576132c355232e"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "TracingApp.ViewController.swiftyDraw(didFinishDrawingIn: SwiftyDraw.SwiftyDrawView, using: __C.UITouch) -&gt; ()"
+                  moduleName = "TracingApp"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/sunil/Desktop/TracingApp/TracingApp/ViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "161"
+                  endingLineNumber = "161"
+                  offsetFromSymbolStart = "1400">
+               </Location>
+               <Location
+                  uuid = "DDF88D95-EC6F-485A-98F5-8111B1217B4D - 2f3995b1ea2807ca"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (__C.CALayer) -&gt; Swift.Bool in TracingApp.ViewController.swiftyDraw(didFinishDrawingIn: SwiftyDraw.SwiftyDrawView, using: __C.UITouch) -&gt; ()"
+                  moduleName = "TracingApp"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/sunil/Desktop/TracingApp/TracingApp/ViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "161"
+                  endingLineNumber = "161"
+                  offsetFromSymbolStart = "24">
+               </Location>
+               <Location
+                  uuid = "DDF88D95-EC6F-485A-98F5-8111B1217B4D - d5f23e4acdf55c3e"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #2 (__C.CALayer) -&gt; () in TracingApp.ViewController.swiftyDraw(didFinishDrawingIn: SwiftyDraw.SwiftyDrawView, using: __C.UITouch) -&gt; ()"
+                  moduleName = "TracingApp"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/sunil/Desktop/TracingApp/TracingApp/ViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "161"
+                  endingLineNumber = "161"
+                  offsetFromSymbolStart = "28">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "6365BDF9-5412-408B-BD4C-AEA5DCC1744D"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "TracingApp/ViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "33"
+            endingLineNumber = "33"
+            landmarkName = "swiftyDraw(isDrawingIn:using:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "F160E80B-4789-4AAA-A086-11E41D655A79"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "TracingApp/ViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "71"
+            endingLineNumber = "71"
+            landmarkName = "swiftyDraw(isDrawingIn:using:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "F160E80B-4789-4AAA-A086-11E41D655A79 - f3d045ca091cd111"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "TracingApp.ViewController.swiftyDraw(isDrawingIn: SwiftyDraw.SwiftyDrawView, using: __C.UITouch) -&gt; ()"
+                  moduleName = "TracingApp"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/sunil/Desktop/TracingApp/TracingApp/ViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "70"
+                  endingLineNumber = "70"
+                  offsetFromSymbolStart = "3576">
+               </Location>
+               <Location
+                  uuid = "F160E80B-4789-4AAA-A086-11E41D655A79 - b94627becf46d7d4"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (__C.CALayer) -&gt; Swift.Bool in TracingApp.ViewController.swiftyDraw(isDrawingIn: SwiftyDraw.SwiftyDrawView, using: __C.UITouch) -&gt; ()"
+                  moduleName = "TracingApp"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/sunil/Desktop/TracingApp/TracingApp/ViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "70"
+                  endingLineNumber = "70"
+                  offsetFromSymbolStart = "24">
+               </Location>
+               <Location
+                  uuid = "F160E80B-4789-4AAA-A086-11E41D655A79 - b6c2bf78668ea068"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #2 (__C.CALayer) -&gt; () in TracingApp.ViewController.swiftyDraw(isDrawingIn: SwiftyDraw.SwiftyDrawView, using: __C.UITouch) -&gt; ()"
+                  moduleName = "TracingApp"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/sunil/Desktop/TracingApp/TracingApp/ViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "70"
+                  endingLineNumber = "70"
+                  offsetFromSymbolStart = "28">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "3D2DB4F5-184F-4454-B570-B05DD32D3BAF"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "TracingApp/ViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "206"
+            endingLineNumber = "206"
+            landmarkName = "swiftyDraw(didFinishDrawingIn:using:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "EFFCECC4-3CDA-426E-AFC2-D2A61C55CAC8"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "TracingApp/ViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "177"
+            endingLineNumber = "177"
+            landmarkName = "swiftyDraw(didFinishDrawingIn:using:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "303C7028-B9E8-42E2-AF4A-E4898279A8CC"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "TracingApp/ViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "159"
+            endingLineNumber = "159"
+            landmarkName = "swiftyDraw(didFinishDrawingIn:using:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "AB2736D6-8C88-4B1B-9CD1-703C8B9160F9"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "TracingApp/ViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "158"
+            endingLineNumber = "158"
+            landmarkName = "swiftyDraw(didFinishDrawingIn:using:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "C9D46C09-C917-4153-8081-95581FD66BFD"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "TracingApp/ViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "150"
+            endingLineNumber = "150"
+            landmarkName = "swiftyDraw(didFinishDrawingIn:using:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "C1C65DB2-5FB6-403F-A681-E12423098C91"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "TracingApp/ViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "154"
+            endingLineNumber = "154"
+            landmarkName = "swiftyDraw(didFinishDrawingIn:using:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
+</Bucket>

@@ -1,0 +1,16 @@
+PODS:
+  - SwiftyDraw (2.4.1)
+
+DEPENDENCIES:
+  - SwiftyDraw
+
+SPEC REPOS:
+  trunk:
+    - SwiftyDraw
+
+SPEC CHECKSUMS:
+  SwiftyDraw: da4c80dd65fb5e1ca9c7a55f7301725f36e32d4a
+
+PODFILE CHECKSUM: 426d0d9c86f14a842c017247b043f744b00721cd
+
+COCOAPODS: 1.15.2
