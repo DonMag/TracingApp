@@ -8,56 +8,6 @@
 import UIKit
 import SwiftyDraw
 
-class ApproachVC: UIViewController {
-	
-	override func viewDidLoad() {
-		super.viewDidLoad()
-		
-		var path = MyBezierPath(svgPath: "m 27.183494,30 c 1.799867,6.703167 5.73525,21.942548 19.10735,25.425821 C 62.18913,58.972955 71.676308,43.806518 56.324843,30 c 8.148778,-0.235038 16.297872,0.3043 24.444458,0")
-		path = MyBezierPath(svgPath: "m 100,80 H 400")
-
-		var defaultTransform = CGAffineTransform(scaleX: 6, y: 6)
-			//.translatedBy(x: 10.0, y: 0.0)
-		
-		defaultTransform = CGAffineTransform(scaleX: 1, y: 1)
-
-		guard let pth = path.cgPath.copy(using: &defaultTransform) else { return }
-		
-		let c1 = CAShapeLayer()
-		c1.strokeColor = UIColor.systemBlue.cgColor
-		c1.fillColor = UIColor.clear.cgColor
-		c1.path = pth
-		
-		view.layer.addSublayer(c1)
-		
-		var pts: [CGPoint] = []
-		for i in 0...20 {
-			let pct = CGFloat(i) / 20.0
-			if let pt = pth.point(at: pct) {
-				pts.append(pt)
-			}
-		}
-		
-		let c2 = CAShapeLayer()
-		c2.strokeColor = UIColor.systemRed.cgColor
-		c2.fillColor = UIColor.systemRed.cgColor
-		
-		let dPath = UIBezierPath()
-		var r: CGRect = .init(x: 0, y: 0, width: 4, height: 4)
-		var d: CGFloat = r.width * 0.5
-		for pt in pts {
-			r.origin = .init(x: pt.x - d, y: pt.y - d)
-			dPath.append(UIBezierPath(ovalIn: r))
-		}
-		c2.path = dPath.cgPath
-		
-		view.layer.addSublayer(c2)
-
-		
-	}
-	
-}
-
 class ViewController: UIViewController, SwiftyDrawViewDelegate {
 	
 	var colors: [UIColor] = [
@@ -75,7 +25,7 @@ class ViewController: UIViewController, SwiftyDrawViewDelegate {
 		
 		// don't allow tracing if touch did not START inside pathToHitTestAgainst
 		if pathToHitTestAgainst.contains(point) {
-			if let i = findClosestPointIndex(to: point, in: interpolatedPoints) {
+			if let i = findClosestPointIndex(to: point, in: percentagePoints) {
 				// starting trace must be at the beginning of the current path
 				// if this is the FIRST touch inside pathToHitTestAgainst
 				//	AND it is farther than proximityToStart interpolated points from the start
@@ -114,7 +64,7 @@ class ViewController: UIViewController, SwiftyDrawViewDelegate {
 		let iscontain = pathToHitTestAgainst.contains(point)
 		if iscontain  {
 			
-			if let i = findClosestPointIndex(to: point, in: interpolatedPoints) {
+			if let i = findClosestPointIndex(to: point, in: percentagePoints) {
 				// starting trace must be at the beginning of the current path
 				// if this is the FIRST touch inside pathToHitTestAgainst
 				//	AND it is farther than proximityToStart interpolated points from the start
@@ -127,7 +77,7 @@ class ViewController: UIViewController, SwiftyDrawViewDelegate {
 				highestIDX = max(highestIDX, i)
 			}
 			
-			let pctAlongPath = CGFloat(highestIDX) / CGFloat(numInterpolatedPoints)
+			let pctAlongPath = CGFloat(highestIDX) / CGFloat(numPercentagePoints)
 			
 			if self.assistiveTouchSwitch.isOn {
 				
@@ -209,7 +159,7 @@ class ViewController: UIViewController, SwiftyDrawViewDelegate {
 
 		allowTracing = false
 		
-		let pctAlongPath = CGFloat(highestIDX) / CGFloat(numInterpolatedPoints)
+		let pctAlongPath = CGFloat(highestIDX) / CGFloat(numPercentagePoints)
 
 		var completed: Bool = false
 		
@@ -266,7 +216,7 @@ class ViewController: UIViewController, SwiftyDrawViewDelegate {
 		var b: Bool = false
 		let point = touch.location(in: drawingView)
 		if pathToHitTestAgainst.contains(point) {
-			if let i = findClosestPointIndex(to: point, in: interpolatedPoints) {
+			if let i = findClosestPointIndex(to: point, in: percentagePoints) {
 				if i <= proximityToStart {
 					b = true
 				}
@@ -301,12 +251,12 @@ class ViewController: UIViewController, SwiftyDrawViewDelegate {
 			return
 		}
 
-		if let i = findClosestPointIndex(to: point, in: interpolatedPoints) {
+		if let i = findClosestPointIndex(to: point, in: percentagePoints) {
 			highestIDX = max(highestIDX, i)
 		}
 		
 		if assistiveTouchSwitch.isOn {
-			let pctAlongPath = CGFloat(highestIDX) / CGFloat(numInterpolatedPoints)
+			let pctAlongPath = CGFloat(highestIDX) / CGFloat(numPercentagePoints)
 			
 			if pctAlongPath >= pctNeededToCompleteAssisted {
 				
@@ -359,8 +309,10 @@ class ViewController: UIViewController, SwiftyDrawViewDelegate {
 			CATransaction.commit()
 			return
 		}
-		
-		let pctAlongPath = CGFloat(highestIDX) / CGFloat(numInterpolatedPoints)
+		print(drawingView.drawItems.last?.path)
+		print(drawingView.drawItems.last?.path.length)
+		print(currentPathToTrace.length)
+		let pctAlongPath = CGFloat(highestIDX) / CGFloat(numPercentagePoints)
 
 		if pctAlongPath < pctNeededToCompleteNonAssisted {
 			allowTracing = false
@@ -666,21 +618,21 @@ class ViewController: UIViewController, SwiftyDrawViewDelegate {
         }
 
 		// generate array of points along path
-		interpolatedPoints = []
-		for i in 0..<numInterpolatedPoints {
-			let pct = CGFloat(i) / CGFloat(numInterpolatedPoints)
+		percentagePoints = []
+		for i in 0...numPercentagePoints {
+			let pct = CGFloat(i) / CGFloat(numPercentagePoints)
 			guard let p = currentPathToTrace.point(at: pct) else {
 				fatalError("could not get point at: \(i) / \(pct)")
 			}
-			interpolatedPoints.append(p)
+			percentagePoints.append(p)
 		}
 
 		allowTracing = false
     }
 
-	var interpolatedPoints: [CGPoint] = []
+	var percentagePoints: [CGPoint] = []
 	var highestIDX: Int = 0
-	var numInterpolatedPoints: Int = 100
+	var numPercentagePoints: Int = 100
 	var proximityToStart: Int = 2
 	var pctNeededToCompleteAssisted: CGFloat = 0.9
 	var pctNeededToCompleteNonAssisted: CGFloat = 0.95

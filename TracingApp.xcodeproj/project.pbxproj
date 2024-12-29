@@ -27,6 +27,7 @@
 		6EB2F568E8950DAE6C2FD8FC /* Pods_TracingApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DE35A0CC73DA7DB73CAEEE97 /* Pods_TracingApp.framework */; };
 		9B2918C20DB2285D3D223FE1 /* Pods_TracingApp_TracingAppUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4F7510CA35E3A7F2B50E7FF9 /* Pods_TracingApp_TracingAppUITests.framework */; };
 		EE29C8BCD6EB40FB914E9057 /* Pods_TracingAppTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FB3153678E0DAE7DF90FA5F /* Pods_TracingAppTests.framework */; };
+		FC948A3B2D203BED00916FED /* ExplainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC948A3A2D203BED00916FED /* ExplainViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -79,6 +80,7 @@
 		B13315F3B9FAC0235177B054 /* Pods-TracingAppTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TracingAppTests.release.xcconfig"; path = "Target Support Files/Pods-TracingAppTests/Pods-TracingAppTests.release.xcconfig"; sourceTree = "<group>"; };
 		B265B47173114D7A3C5609E1 /* Pods-TracingApp-TracingAppUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TracingApp-TracingAppUITests.debug.xcconfig"; path = "Target Support Files/Pods-TracingApp-TracingAppUITests/Pods-TracingApp-TracingAppUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		DE35A0CC73DA7DB73CAEEE97 /* Pods_TracingApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TracingApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		FC948A3A2D203BED00916FED /* ExplainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExplainViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -156,6 +158,7 @@
 				10DDC9A125A9AA2300FC4200 /* PathElement.swift */,
 				1052406B25A77FBA00B35939 /* Extensions.swift */,
 				10888690259B8AD400078FF2 /* Main.storyboard */,
+				FC948A3A2D203BED00916FED /* ExplainViewController.swift */,
 				10888693259B8AD500078FF2 /* Assets.xcassets */,
 				10888695259B8AD500078FF2 /* LaunchScreen.storyboard */,
 				1091CAAF25A0E313003001D8 /* A.svg */,
@@ -444,6 +447,7 @@
 				108886BE259B8B7A00078FF2 /* SVGPath.swift in Sources */,
 				1088868B259B8AD400078FF2 /* AppDelegate.swift in Sources */,
 				1088868D259B8AD400078FF2 /* SceneDelegate.swift in Sources */,
+				FC948A3B2D203BED00916FED /* ExplainViewController.swift in Sources */,
 				10DDC99D25A9A99C00FC4200 /* BezierPath+Length.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
