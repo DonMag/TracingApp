@@ -30,6 +30,7 @@
 		FC948A3B2D203BED00916FED /* ExplainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC948A3A2D203BED00916FED /* ExplainViewController.swift */; };
 		FC948A3D2D24333A00916FED /* TmpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC948A3C2D24333A00916FED /* TmpViewController.swift */; };
 		FC948A3F2D243A7200916FED /* UserPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC948A3E2D243A7200916FED /* UserPath.swift */; };
+		FC948A412D25A3EC00916FED /* DemoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC948A402D25A3EC00916FED /* DemoViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -85,6 +86,7 @@
 		FC948A3A2D203BED00916FED /* ExplainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExplainViewController.swift; sourceTree = "<group>"; };
 		FC948A3C2D24333A00916FED /* TmpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TmpViewController.swift; sourceTree = "<group>"; };
 		FC948A3E2D243A7200916FED /* UserPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserPath.swift; sourceTree = "<group>"; };
+		FC948A402D25A3EC00916FED /* DemoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -164,6 +166,7 @@
 				10888690259B8AD400078FF2 /* Main.storyboard */,
 				FC948A3A2D203BED00916FED /* ExplainViewController.swift */,
 				FC948A3C2D24333A00916FED /* TmpViewController.swift */,
+				FC948A402D25A3EC00916FED /* DemoViewController.swift */,
 				FC948A3E2D243A7200916FED /* UserPath.swift */,
 				10888693259B8AD500078FF2 /* Assets.xcassets */,
 				10888695259B8AD500078FF2 /* LaunchScreen.storyboard */,
@@ -451,6 +454,7 @@
 				1052406C25A77FBA00B35939 /* Extensions.swift in Sources */,
 				FC948A3D2D24333A00916FED /* TmpViewController.swift in Sources */,
 				1088868F259B8AD400078FF2 /* ViewController.swift in Sources */,
+				FC948A412D25A3EC00916FED /* DemoViewController.swift in Sources */,
 				108886BE259B8B7A00078FF2 /* SVGPath.swift in Sources */,
 				1088868B259B8AD400078FF2 /* AppDelegate.swift in Sources */,
 				1088868D259B8AD400078FF2 /* SceneDelegate.swift in Sources */,

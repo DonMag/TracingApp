@@ -1,14 +1,14 @@
 //
-//  TmpViewController.swift
+//  DemoViewController.swift
 //  TracingApp
 //
-//  Created by Don Mag on 12/31/24.
+//  Created by Don Mag on 1/1/25.
 //
 
 import UIKit
 import SwiftyDraw
 
-class TmpViewController: UIViewController, SwiftyDrawViewDelegate {
+class DemoViewController: UIViewController, SwiftyDrawViewDelegate {
 
 	var accentColor = UIColor(hex: "00acc1").withAlphaComponent(0.75)
 	let canvasView = SwiftyDrawView()
@@ -16,7 +16,7 @@ class TmpViewController: UIViewController, SwiftyDrawViewDelegate {
 	var strokeIndex: Int = 0
 	var currentPathToTrace : CGPath!
 	var defaultTransform  = CGAffineTransform()
-
+	
 	let hitColor: CGColor = UIColor.darkGray.cgColor
 	let dashColor: CGColor = UIColor.cyan.cgColor
 	let userColor: CGColor = UIColor.systemGreen.withAlphaComponent(0.75).cgColor
@@ -33,10 +33,10 @@ class TmpViewController: UIViewController, SwiftyDrawViewDelegate {
 	var userPaths: [MyBezierPath] = []
 	var dPath: MyBezierPath!
 	var traceLength: CGFloat = 0
-
+	
 	var numPercentagePoints: Int = 10
 	var percentagePoints: [[CGPoint]] = []
-
+	
 	var drawLayers: [CAShapeLayer]!
 	var traceLayer: CAShapeLayer!
 	var closeLayer: CAShapeLayer!
@@ -68,19 +68,20 @@ class TmpViewController: UIViewController, SwiftyDrawViewDelegate {
 		
 		return sTargetView
 	}()
-
+	
 	override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
 		print("touch")
 		//canvasView.undo()
 		
-		var c2: CAShapeLayer!
 		var r: CGRect!
 		var d: CGFloat!
 		
 		print("step:", step)
-
+		
+		maxIDX = 0
+		
 		guard let t = touches.first else { return }
-		var p: CGPoint = t.location(in: self.view)
+		let p: CGPoint = t.location(in: self.view)
 		var dp: CGPoint = p
 		dp.x += 374
 		dp.y += 45
@@ -94,67 +95,31 @@ class TmpViewController: UIViewController, SwiftyDrawViewDelegate {
 			infoLabel.isHidden = false
 			isDrawing = 1
 			
-			dashLayers[1].opacity = 0.0
-			dashLayers[2].opacity = 0.0
-			
 			imgView.frame.origin = dp
 		}
 		
 		if step == 1 {
 			dPath = MyBezierPath()
 			dPath.move(to: p)
-
+			
 			for cc in drawLayers {
 				cc.path = dPath.cgPath
 			}
-
+			
 			infoLabel.text = "Trace Len: \(Int(traceLength))    User Len: 0"
 			
 			imgView.frame.origin = dp
 		}
 		
 		if step == 2 {
-			for cc in sqLayers1 {
-				cc.opacity = 1.0
-			}
-			for cc in sqLayers2 {
-				cc.opacity = 1.0
-			}
-			for cc in dashLayers {
-				cc.opacity = 1.0
-			}
-			for cc in drawLayers {
-				cc.opacity = 0.0
-			}
-			infoLabel.isHidden = true
-			isDrawing = 0
 
-			step += 1
-			step = 12
-			return()
-		}
-		
-		if step == 12 {
-			for cc in sqLayers1 {
-				cc.opacity = 0.0
-			}
-			for cc in sqLayers2 {
+			for cc in drawLayers {
+				cc.path = nil
 				cc.opacity = 0.0
 			}
 			
-			tracingIDX = 0
+			infoLabel.text = " "
 
-			for (i, cc) in ptLayers.enumerated() {
-				cc.opacity = i == tracingIDX ? 1.0 : 0.0
-			}
-			for (i, cc) in dashLayers.enumerated() {
-				cc.opacity = i == tracingIDX ? 1.0 : 0.0
-			}
-
-			step += 1
-			return()
-		}
-		if step == 13 {
 			numPercentagePoints = 10
 			
 			for (i, pth) in strokePathsArray.enumerated() {
@@ -168,7 +133,7 @@ class TmpViewController: UIViewController, SwiftyDrawViewDelegate {
 					pctPoints.append(p)
 				}
 				percentagePoints.append(pctPoints)
-
+				
 				let dPath = UIBezierPath()
 				r = .init(x: 0, y: 0, width: 4, height: 4)
 				d = r.width * 0.5
@@ -178,7 +143,7 @@ class TmpViewController: UIViewController, SwiftyDrawViewDelegate {
 				}
 				ptLayers[i].path = dPath.cgPath
 			}
-
+			
 			tracingIDX = 0
 			//assitedLayers[tracingIDX].opacity = 1.0
 			closeLayer.opacity = 1.0
@@ -186,20 +151,114 @@ class TmpViewController: UIViewController, SwiftyDrawViewDelegate {
 			step += 1
 			return()
 		}
-		if step == 14 {
-			infoLabel.text = "Closest: 0 \t Max: 0"
+		
+		if step == 4 {
+			infoLabel.text = "Closest: 0  Max: 0  Pct: 0%"
 			infoLabel.isHidden = false
 			print("start")
 			isTracing = true
+			closeLayer.opacity = 1.0
 			
 			dPath = MyBezierPath()
+			dPath.move(to: p)
+			
 			for cc in drawLayers {
-				cc.opacity = 1.0
+				cc.opacity = 0.0
+				cc.path = dPath.cgPath
 			}
-
-			step += 1
+			
 			return()
 		}
+		if step == 5 {
+			maxIDX = 0
+			infoLabel.text = "Closest: 0  Max: 0  Pct: 0%"
+			for cc in drawLayers {
+				cc.path = nil
+			}
+			closeLayer.path = nil
+			
+			//step += 1
+			return()
+		}
+		if step == 6 {
+			infoLabel.text = "Closest: 0  Max: 0  Pct: 0%"
+			infoLabel.isHidden = false
+			print("start")
+			isTracing = true
+			closeLayer.opacity = 1.0
+			maxIDX = 0
+			
+			dPath = MyBezierPath()
+			dPath.move(to: p)
+			
+			for cc in drawLayers {
+				cc.opacity = 1.0
+				cc.path = dPath.cgPath
+			}
+
+			assitedLayers[0].strokeEnd = 0.0
+
+			return()
+		}
+
+		if step == 7 {
+			infoLabel.text = "Closest: 0  Max: 0  Pct: 0%"
+			infoLabel.isHidden = false
+			print("start")
+			maxIDX = 0
+			isTracing = true
+			
+			dPath = MyBezierPath()
+			dPath.move(to: p)
+			for cc in drawLayers {
+				cc.opacity = 0.0
+				cc.path = dPath.cgPath
+			}
+			assitedLayers[0].strokeEnd = 0.0
+			
+			//step += 1
+			return()
+		}
+		
+		if step == 8 {
+			assitedLayers[0].opacity = 1.0
+			
+			return()
+		}
+		if step == 9 {
+
+			infoLabel.text = "100 points"
+			
+			assitedLayers[0].opacity = 0.0
+
+			numPercentagePoints = 100
+			percentagePoints = []
+			
+			for (i, pth) in strokePathsArray.enumerated() {
+				let cpth = pth.cgPath.copy(using: &defaultTransform)!
+				var pctPoints: [CGPoint] = []
+				for i in 0...numPercentagePoints {
+					let pct = CGFloat(i) / CGFloat(numPercentagePoints)
+					guard let p = cpth.point(at: pct) else {
+						fatalError("could not get point at: \(i) / \(pct)")
+					}
+					pctPoints.append(p)
+				}
+				percentagePoints.append(pctPoints)
+				
+				let dPath = UIBezierPath()
+				r = .init(x: 0, y: 0, width: 2, height: 2)
+				d = r.width * 0.5
+				for pt in pctPoints {
+					r.origin = .init(x: pt.x - d, y: pt.y - d)
+					dPath.append(UIBezierPath(ovalIn: r))
+				}
+				ptLayers[i].path = dPath.cgPath
+				ptLayers[i].lineWidth = 0
+			}
+			
+		}
+		
 		if step == 15 {
 			isDrawing = 1
 			dPath.move(to: p)
@@ -214,19 +273,19 @@ class TmpViewController: UIViewController, SwiftyDrawViewDelegate {
 				cc.opacity = 0.0
 			}
 			imgView.frame.origin = .zero
-
+			
 			step += 1
 			return()
 		}
 	}
 	override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-
+		
 		guard let t = touches.first else { return }
 		var p: CGPoint = t.location(in: self.view)
 		var dp: CGPoint = p
 		dp.x += 374
 		dp.y += 45
-
+		
 		if isDrawing == 1 {
 			dPath.addLine(to: p)
 			imgView.frame.origin = dp
@@ -243,10 +302,10 @@ class TmpViewController: UIViewController, SwiftyDrawViewDelegate {
 		if let pIDX = findClosestPointIndex(to: p, in: percentagePoints[tracingIDX]) {
 			maxIDX = max(maxIDX, pIDX)
 			var pp = percentagePoints[tracingIDX][pIDX]
-			pp.x += 374
-			pp.y += 45
+			pp.x += (374 + 1)
+			pp.y += (45 + 0)
 			let cPath = UIBezierPath()
-			cPath.move(to: dp)
+			cPath.move(to: .init(x: dp.x + 1, y: dp.y))
 			cPath.addLine(to: pp)
 			CATransaction.begin()
 			CATransaction.setDisableActions(false)
@@ -254,12 +313,12 @@ class TmpViewController: UIViewController, SwiftyDrawViewDelegate {
 			assitedLayers[tracingIDX].strokeEnd = CGFloat(maxIDX) / CGFloat(numPercentagePoints)
 			CATransaction.commit()
 			let pct = String(format: "%0.0f", (CGFloat(maxIDX) / CGFloat(numPercentagePoints)) * 100.0)
-			infoLabel.text = "Closest: \(pIDX)    Max: \(maxIDX)    Pct: \(pct)%"
+			infoLabel.text = "Closest: \(pIDX)  Max: \(maxIDX)  Pct: \(pct)%"
 		}
 		imgView.frame.origin = dp
 	}
 	override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-
+		print("touch ended")
 		closeLayer.path = nil
 
 		if isDrawing == 1 {
@@ -267,7 +326,7 @@ class TmpViewController: UIViewController, SwiftyDrawViewDelegate {
 			step += 1
 			return()
 		}
-
+		
 		if !isTracing { return }
 		
 		if maxIDX < numPercentagePoints {
@@ -276,8 +335,8 @@ class TmpViewController: UIViewController, SwiftyDrawViewDelegate {
 			return()
 		}
 		
-		tracingIDX += 1
-		infoLabel.text = "Closest: 0    Max: 0    Pct: 0%"
+		//tracingIDX += 1
+		infoLabel.text = "Closest: 0  Max: 0  Pct: 0%"
 		imgView.frame.origin = .zero
 		closeLayer.path = nil
 		for (i, cc) in ptLayers.enumerated() {
@@ -302,25 +361,26 @@ class TmpViewController: UIViewController, SwiftyDrawViewDelegate {
 		guard !points.isEmpty else { return nil }
 		return points.enumerated().min(by: { $0.element.distance(to: target) < $1.element.distance(to: target) })?.offset
 	}
-
+	
 	override func viewDidLoad() {
-        super.viewDidLoad()
+		super.viewDidLoad()
 		view.backgroundColor = .systemYellow
+		view.backgroundColor = UIColor(hex: "88AAFF")
 		self.view.addSubview(targetView)
-
+		
 		var path: MyBezierPath!
-
+		
 		path = MyBezierPath(svgPath: "m 17.899207,12.838052 c 24.277086,0 48.554171,0 72.831257,0")
-
+		
 		strokePathsArray.append(path)
 		
 		path = MyBezierPath(svgPath: "M 81.707208,12.894524 C 81.560683,44.598905 71.417523,97.40583 45.542397,94.433749")
-
-		strokePathsArray.append(path)
+		
+		//strokePathsArray.append(path)
 		
 		path = MyBezierPath(svgPath: "m 27.183494,30 c 1.799867,6.703167 5.73525,21.942548 19.10735,25.425821 C 62.18913,58.972955 71.676308,43.806518 56.324843,30 c 8.148778,-0.235038 16.297872,0.3043 24.444458,0")
-
-		strokePathsArray.append(path)
+		
+		//strokePathsArray.append(path)
 		
 		defaultTransform = CGAffineTransform(scaleX: self.targetView.frame.width/109, y: self.targetView.frame.width/109)
 		
@@ -329,13 +389,12 @@ class TmpViewController: UIViewController, SwiftyDrawViewDelegate {
 			shapeLayer.backgroundColor = UIColor.cyan.cgColor
 			
 			shapeLayer.transform = CATransform3DMakeAffineTransform(defaultTransform)
-
+			
 			shapeLayer.path = pth.cgPath
 			shapeLayer.fillColor = UIColor.clear.cgColor
 			shapeLayer.lineWidth = 10
 			shapeLayer.lineCap = .round
 			shapeLayer.strokeColor = UIColor.white.cgColor
-			self.targetView.layer.addSublayer(shapeLayer)
 			self.targetView.layer.insertSublayer(shapeLayer, at: 0)
 			
 			//self.targetView.layer.addSublayer(self.canvasView.layer)
@@ -396,21 +455,21 @@ class TmpViewController: UIViewController, SwiftyDrawViewDelegate {
 			
 			self.targetView.layer.addSublayer(aLayer)
 			assitedLayers.append(aLayer)
-
+			
 		}
 		for i in 1...strokePathsArray.count {
 			let uPth = UserPath().path(i)
 			userPaths.append(MyBezierPath(cgPath: uPth.cgPath))
-
+			
 			var c2: CAShapeLayer!
 			
 			c2 = CAShapeLayer()
-			c2.strokeColor = UIColor.red.cgColor
-			c2.fillColor = UIColor.yellow.cgColor
-			c2.lineWidth = 2
+			c2.strokeColor = UIColor.systemRed.cgColor
+			c2.fillColor = UIColor.systemRed.cgColor
+			c2.lineWidth = 1
 			self.targetView.layer.addSublayer(c2)
 			ptLayers.append(c2)
-
+			
 			c2 = CAShapeLayer()
 			c2.fillColor = nil
 			c2.strokeColor = userColor
@@ -420,7 +479,7 @@ class TmpViewController: UIViewController, SwiftyDrawViewDelegate {
 			c2.path = uPth.cgPath
 			self.targetView.layer.addSublayer(c2)
 			sqLayers1.append(c2)
-
+			
 			c2 = CAShapeLayer()
 			c2.fillColor = nil
 			c2.strokeColor = userLineColor
@@ -439,13 +498,13 @@ class TmpViewController: UIViewController, SwiftyDrawViewDelegate {
 		traceLayer.transform = CATransform3DMakeAffineTransform(defaultTransform)
 		traceLayer.strokeColor = UIColor(hex: "f06292").cgColor
 		traceLayer.lineWidth = 0.5
-
+		
 		traceLayer.path = dashLayers[0].path
 		view.layer.addSublayer(traceLayer)
 		
 		closeLayer = CAShapeLayer()
 		closeLayer.fillColor = UIColor.clear.cgColor
-		closeLayer.strokeColor = UIColor.red.cgColor
+		closeLayer.strokeColor = UIColor.black.cgColor
 		closeLayer.opacity = 0.0
 		view.layer.addSublayer(closeLayer)
 		
@@ -482,8 +541,10 @@ class TmpViewController: UIViewController, SwiftyDrawViewDelegate {
 		])
 		infoLabel.backgroundColor = UIColor(white: 0.95, alpha: 1.0)
 		infoLabel.font = .systemFont(ofSize: 14.0, weight: .light)
+		infoLabel.font = .monospacedSystemFont(ofSize: 14.0, weight: .light)
 		infoLabel.textAlignment = .center
-		infoLabel.isHidden = true
+		infoLabel.text = " "
+		//infoLabel.isHidden = true
 		
 		drawLayers = []
 		var drawLayer = CAShapeLayer()
@@ -503,34 +564,34 @@ class TmpViewController: UIViewController, SwiftyDrawViewDelegate {
 		drawLayer.lineJoin = .round
 		self.targetView.layer.addSublayer(drawLayer)
 		drawLayers.append(drawLayer)
-
-    }
-
+		
+	}
+	
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
-
+		
 	}
-
+	
 	func calculatePoint(from point: CGPoint, angle: CGFloat, distance: CGFloat) -> CGPoint {
 		return CGPoint(x: point.x + CGFloat(cosf(Float(angle))) * distance, y: point.y + CGFloat(sinf(Float(angle))) * distance)
 	}
-
+	
 	func swiftyDraw(shouldBeginDrawingIn drawingView: SwiftyDrawView, using touch: UITouch) -> Bool {
 		
-//		highestIDX = 0
+		//		highestIDX = 0
 		
 		var b: Bool = false
 		
-//		let point = touch.location(in: drawingView)
-//		if pathToHitTestAgainst.contains(point) {
-//			if let i = findClosestPointIndex(to: point, in: percentagePoints) {
-//				if i <= proximityToStart {
-//					b = true
-//				}
-//			}
-//		}
-//		
-//		allowTracing = b
+		//		let point = touch.location(in: drawingView)
+		//		if pathToHitTestAgainst.contains(point) {
+		//			if let i = findClosestPointIndex(to: point, in: percentagePoints) {
+		//				if i <= proximityToStart {
+		//					b = true
+		//				}
+		//			}
+		//		}
+		//
+		//		allowTracing = b
 		
 		return b
 	}
@@ -543,63 +604,63 @@ class TmpViewController: UIViewController, SwiftyDrawViewDelegate {
 			print(p.path.length)
 		}
 		
-//		if !allowTracing { return }
-//		
-//		let point = touch.location(in: drawingView)
-//		
-//		if !pathToHitTestAgainst.contains(point) {
-//			allowTracing = false
-//			drawingView.undo()
-//			CATransaction.begin()
-//			CATransaction.setDisableActions(false)
-//			if self.assistiveDrawLayersArray.count > self.strokeIndex {
-//				self.assistiveDrawLayersArray[strokeIndex].strokeEnd = 0
-//			}
-//			CATransaction.setCompletionBlock({
-//				self.showTutorial()
-//			})
-//			CATransaction.commit()
-//			return
-//		}
-//		
-//		if let i = findClosestPointIndex(to: point, in: percentagePoints) {
-//			highestIDX = max(highestIDX, i)
-//		}
-//		
-//		if assistiveTouchSwitch.isOn {
-//			let pctAlongPath = CGFloat(highestIDX) / CGFloat(numPercentagePoints)
-//			
-//			if pctAlongPath >= pctNeededToCompleteAssisted {
-//				
-//				CATransaction.begin()
-//				CATransaction.setDisableActions(false)
-//				assistiveDrawLayersArray[strokeIndex].strokeEnd = 1
-//				assistiveDrawLayersArray[strokeIndex].strokeColor = self.colors[self.strokeIndex].cgColor
-//				CATransaction.commit()
-//				
-//				dashLayer.removeFromSuperlayer()
-//				dashLayer.sublayers?.filter{ $0 is CAShapeLayer }.forEach{ $0.removeFromSuperlayer() }
-//				drawingView.clear()
-//				
-//				allowTracing = false
-//				
-//				if strokeIndex == strokePathsArray.count-1 {
-//					return
-//				}
-//				
-//				self.strokeIndex+=1
-//				showHint()
-//				showTutorial()
-//				
-//			} else {
-//				
-//				CATransaction.begin()
-//				CATransaction.setDisableActions(true)
-//				assistiveDrawLayersArray[strokeIndex].strokeEnd = pctAlongPath
-//				CATransaction.commit()
-//				
-//			}
-//		}
+		//		if !allowTracing { return }
+		//
+		//		let point = touch.location(in: drawingView)
+		//
+		//		if !pathToHitTestAgainst.contains(point) {
+		//			allowTracing = false
+		//			drawingView.undo()
+		//			CATransaction.begin()
+		//			CATransaction.setDisableActions(false)
+		//			if self.assistiveDrawLayersArray.count > self.strokeIndex {
+		//				self.assistiveDrawLayersArray[strokeIndex].strokeEnd = 0
+		//			}
+		//			CATransaction.setCompletionBlock({
+		//				self.showTutorial()
+		//			})
+		//			CATransaction.commit()
+		//			return
+		//		}
+		//
+		//		if let i = findClosestPointIndex(to: point, in: percentagePoints) {
+		//			highestIDX = max(highestIDX, i)
+		//		}
+		//
+		//		if assistiveTouchSwitch.isOn {
+		//			let pctAlongPath = CGFloat(highestIDX) / CGFloat(numPercentagePoints)
+		//
+		//			if pctAlongPath >= pctNeededToCompleteAssisted {
+		//
+		//				CATransaction.begin()
+		//				CATransaction.setDisableActions(false)
+		//				assistiveDrawLayersArray[strokeIndex].strokeEnd = 1
+		//				assistiveDrawLayersArray[strokeIndex].strokeColor = self.colors[self.strokeIndex].cgColor
+		//				CATransaction.commit()
+		//
+		//				dashLayer.removeFromSuperlayer()
+		//				dashLayer.sublayers?.filter{ $0 is CAShapeLayer }.forEach{ $0.removeFromSuperlayer() }
+		//				drawingView.clear()
+		//
+		//				allowTracing = false
+		//
+		//				if strokeIndex == strokePathsArray.count-1 {
+		//					return
+		//				}
+		//
+		//				self.strokeIndex+=1
+		//				showHint()
+		//				showTutorial()
+		//
+		//			} else {
+		//
+		//				CATransaction.begin()
+		//				CATransaction.setDisableActions(true)
+		//				assistiveDrawLayersArray[strokeIndex].strokeEnd = pctAlongPath
+		//				CATransaction.commit()
+		//
+		//			}
+		//		}
 		
 	}
 	func swiftyDraw(didFinishDrawingIn drawingView: SwiftyDrawView, using touch: UITouch) {
@@ -607,63 +668,63 @@ class TmpViewController: UIViewController, SwiftyDrawViewDelegate {
 		if let p = drawingView.drawItems.first {
 			print(p.path)
 		}
-
-//		if !allowTracing { return }
-//		
-//		if assistiveTouchSwitch.isOn {
-//			allowTracing = false
-//			drawingView.undo()
-//			CATransaction.begin()
-//			CATransaction.setDisableActions(false)
-//			if self.assistiveDrawLayersArray.count > self.strokeIndex {
-//				self.assistiveDrawLayersArray[strokeIndex].strokeEnd = 0
-//			}
-//			CATransaction.setCompletionBlock({
-//				self.showTutorial()
-//			})
-//			CATransaction.commit()
-//			return
-//		}
-//		print(drawingView.drawItems.last?.path)
-//		print(drawingView.drawItems.last?.path.length)
-//		print(currentPathToTrace.length)
-//		let pctAlongPath = CGFloat(highestIDX) / CGFloat(numPercentagePoints)
-//		
-//		if pctAlongPath < pctNeededToCompleteNonAssisted {
-//			allowTracing = false
-//			drawingView.undo()
-//			showTutorial()
-//			return
-//		}
-//		
-//		dashLayer.removeFromSuperlayer()
-//		dashLayer.sublayers?.filter{ $0 is CAShapeLayer }.forEach{ $0.removeFromSuperlayer() }
-//		
-//		let layer = CAShapeLayer()
-//		layer.fillColor = UIColor.clear.cgColor
-//		layer.lineWidth = 10
-//		layer.lineCap = .round
-//		layer.strokeColor = self.accentColor.cgColor
-//		layer.strokeColor = self.colors[self.strokeIndex].cgColor
-//		if let drawItem = drawingView.drawItems.last {
-//			layer.path = drawItem.path
-//		}
-//		self.canvasView.layer.addSublayer(layer)
-//		
-//		drawingView.clear()
-//		
-//		if strokeIndex == strokePathsArray.count-1 {
-//			return
-//		}
-//		
-//		self.strokeIndex+=1
-//		showHint()
-//		showTutorial()
+		
+		//		if !allowTracing { return }
+		//
+		//		if assistiveTouchSwitch.isOn {
+		//			allowTracing = false
+		//			drawingView.undo()
+		//			CATransaction.begin()
+		//			CATransaction.setDisableActions(false)
+		//			if self.assistiveDrawLayersArray.count > self.strokeIndex {
+		//				self.assistiveDrawLayersArray[strokeIndex].strokeEnd = 0
+		//			}
+		//			CATransaction.setCompletionBlock({
+		//				self.showTutorial()
+		//			})
+		//			CATransaction.commit()
+		//			return
+		//		}
+		//		print(drawingView.drawItems.last?.path)
+		//		print(drawingView.drawItems.last?.path.length)
+		//		print(currentPathToTrace.length)
+		//		let pctAlongPath = CGFloat(highestIDX) / CGFloat(numPercentagePoints)
+		//
+		//		if pctAlongPath < pctNeededToCompleteNonAssisted {
+		//			allowTracing = false
+		//			drawingView.undo()
+		//			showTutorial()
+		//			return
+		//		}
+		//
+		//		dashLayer.removeFromSuperlayer()
+		//		dashLayer.sublayers?.filter{ $0 is CAShapeLayer }.forEach{ $0.removeFromSuperlayer() }
+		//
+		//		let layer = CAShapeLayer()
+		//		layer.fillColor = UIColor.clear.cgColor
+		//		layer.lineWidth = 10
+		//		layer.lineCap = .round
+		//		layer.strokeColor = self.accentColor.cgColor
+		//		layer.strokeColor = self.colors[self.strokeIndex].cgColor
+		//		if let drawItem = drawingView.drawItems.last {
+		//			layer.path = drawItem.path
+		//		}
+		//		self.canvasView.layer.addSublayer(layer)
+		//
+		//		drawingView.clear()
+		//
+		//		if strokeIndex == strokePathsArray.count-1 {
+		//			return
+		//		}
+		//
+		//		self.strokeIndex+=1
+		//		showHint()
+		//		showTutorial()
 		
 	}
-
+	
 	func swiftyDraw(didCancelDrawingIn drawingView: SwiftyDrawView, using touch: UITouch) {
 		
 	}
-
+	
 }
