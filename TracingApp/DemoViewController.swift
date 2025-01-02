@@ -598,7 +598,7 @@ class DemoViewController: UIViewController {
 			
 		}
 		for i in 1...strokePathsArray.count {
-			let uPth = UserPath().path(i)
+			let uPth = UIBezierPath() // UserPath().path(i)
 			userPaths.append(MyBezierPath(cgPath: uPth.cgPath))
 			
 			var c2: CAShapeLayer!

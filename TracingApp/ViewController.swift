@@ -268,8 +268,6 @@ class ViewController: UIViewController, SwiftyDrawViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
 		
-		assistiveTouchSwitch.isOn = false
-		
         self.view.addSubview(targetView)
         // Do any additional setup after loading the view.
         let path = MyBezierPath(svgPath: "m 17.899207,12.838052 c 24.277086,0 48.554171,0 72.831257,0")
