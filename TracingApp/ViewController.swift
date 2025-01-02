@@ -250,6 +250,14 @@ class ViewController: UIViewController, SwiftyDrawViewDelegate {
 
     let dashLayer = CAShapeLayer()
     let tutorialLayer = CALayer()
+	
+	var pointsAlongPath: [CGPoint] = []
+	var maxIDX: Int = 0
+	var numPointsOnPath: Int = 100
+	var proximityToStart: Int = 2
+	var pctNeededToCompleteAssisted: CGFloat = 0.9
+	var pctNeededToCompleteNonAssisted: CGFloat = 0.95
+	var allowTracing: Bool = true
 
     var strokeIndex = 0 {
         didSet {
@@ -420,14 +428,6 @@ class ViewController: UIViewController, SwiftyDrawViewDelegate {
 
 		allowTracing = false
     }
-
-	var pointsAlongPath: [CGPoint] = []
-	var maxIDX: Int = 0
-	var numPointsOnPath: Int = 100
-	var proximityToStart: Int = 2
-	var pctNeededToCompleteAssisted: CGFloat = 0.9
-	var pctNeededToCompleteNonAssisted: CGFloat = 0.95
-	var allowTracing: Bool = true
 
     func showTutorial(){
 
