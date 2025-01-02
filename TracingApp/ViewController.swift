@@ -198,7 +198,6 @@ class ViewController: UIViewController, SwiftyDrawViewDelegate {
 			}
 			
 			dashLayer.sublayers?.filter{ $0 is CAShapeLayer }.forEach{ $0.removeFromSuperlayer() }
-			//drawingView.clear()
 			
 			self.strokeIndex+=1
 			showHint()

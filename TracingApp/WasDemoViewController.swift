@@ -1,16 +1,17 @@
 //
-//  DemoViewController.swift
+//  WasDemoViewController.swift
 //  TracingApp
 //
-//  Created by Don Mag on 1/1/25.
+//  Created by Don Mag on 1/2/25.
 //
 
 import UIKit
+import SwiftyDraw
 
-class DemoViewController: UIViewController {
+class WasDemoViewController: UIViewController, SwiftyDrawViewDelegate {
 
 	var accentColor = UIColor(hex: "00acc1").withAlphaComponent(0.75)
-	let canvasView = UIView()
+	let canvasView = SwiftyDrawView()
 	var strokePathsArray = [MyBezierPath]()
 	var strokeIndex: Int = 0
 	var currentPathToTrace : CGPath!
@@ -19,7 +20,7 @@ class DemoViewController: UIViewController {
 	let hitColor: CGColor = UIColor.darkGray.cgColor
 	let dashColor: CGColor = UIColor.cyan.cgColor
 	let userColor: CGColor = UIColor.systemGreen.withAlphaComponent(0.75).cgColor
-	let userLineColor: CGColor = UIColor.yellow.cgColor
+	let userLineColor: CGColor = UIColor.green.cgColor
 	
 	var step: Int = 0
 	var pctEnd: CGFloat = 0.12
@@ -34,9 +35,8 @@ class DemoViewController: UIViewController {
 	var dPath: MyBezierPath!
 	var traceLength: CGFloat = 0
 	
-	var numPointsOnPath: Int = 10
-	var nextNum: Int = 10
-	var pointsAlongPath: [[CGPoint]] = []
+	var numPercentagePoints: Int = 10
+	var percentagePoints: [[CGPoint]] = []
 	
 	var drawLayers: [CAShapeLayer]!
 	var traceLayer: CAShapeLayer!
@@ -44,8 +44,6 @@ class DemoViewController: UIViewController {
 	let imgView: UIImageView = UIImageView()
 	var isDrawing: Int = 0
 	var isTracing: Bool = false
-	var showClosest: Bool = false
-	var showAssist: Bool = false
 	var tracingIDX: Int = -1
 	var maxIDX: Int = 0
 	let infoLabel: UILabel = UILabel()
@@ -67,7 +65,10 @@ class DemoViewController: UIViewController {
 		canvasView.isUserInteractionEnabled = true
 		canvasView.backgroundColor = .clear
 		sTargetView.addSubview(canvasView)
+		canvasView.brush = .thick
+		canvasView.brush.color =  Color.init(self.accentColor)
 		canvasView.frame = sTargetView.bounds
+		canvasView.delegate = self
 		
 		return sTargetView
 	}()
@@ -116,57 +117,26 @@ class DemoViewController: UIViewController {
 		
 		if step == 2 {
 			
-			dPath = MyBezierPath()
-			dPath.move(to: p)
-			
-			for cc in drawLayers {
-				cc.path = dPath.cgPath
-			}
-			drawLayers[0].opacity = 0.0
-			
-			//tracingIDX = 0
-			closeLayer.opacity = 1.0
-			
-			infoLabel.text = "Trace Len: \(Int(traceLength))  User Len: 0"
-			
-			imgView.frame.origin = dp
-			
-			assitedLayers[0].opacity = 1.0
-			assitedLayers[0].strokeEnd = 0.0
-			
-			showAssist = true
-			
-			print("2")
-			return()
-		}
-		
-		if step == 3 {
 			for cc in drawLayers {
 				cc.path = nil
-				cc.opacity = 0.0
-			}
-			for cc in assitedLayers {
-				cc.strokeEnd = 0.0
 				cc.opacity = 0.0
 			}
 			
 			infoLabel.text = "calculate 10 points"
 			
-			pointsAlongPath = []
-
-			numPointsOnPath = 10
+			numPercentagePoints = 10
 			
 			for (i, pth) in strokePathsArray.enumerated() {
 				let cpth = pth.cgPath.copy(using: &defaultTransform)!
 				var pctPoints: [CGPoint] = []
-				for i in 0...numPointsOnPath {
-					let pct = CGFloat(i) / CGFloat(numPointsOnPath)
+				for i in 0...numPercentagePoints {
+					let pct = CGFloat(i) / CGFloat(numPercentagePoints)
 					guard let p = cpth.point(at: pct) else {
 						fatalError("could not get point at: \(i) / \(pct)")
 					}
 					pctPoints.append(p)
 				}
-				pointsAlongPath.append(pctPoints)
+				percentagePoints.append(pctPoints)
 				
 				let dPath = UIBezierPath()
 				r = .init(x: 0, y: 0, width: 4, height: 4)
@@ -179,28 +149,11 @@ class DemoViewController: UIViewController {
 				ptLayers[i].opacity = i == 0 ? 1.0 : 0.0
 			}
 			
-			if false {
-				let path = MyBezierPath(svgPath: "m 17.899207,12.838052 c 24.277086,0 48.554171,0 72.831257,0")
-				let cpth = path.cgPath.copy(using: &defaultTransform)!
-				
-				numPointsOnPath = 10
-				var pointsAlongPath: [CGPoint] = []
-
-				for i in 0...numPointsOnPath {
-					let pct = CGFloat(i) / CGFloat(numPointsOnPath)
-					guard let p = cpth.point(at: pct) else {
-						fatalError("could not get point at: \(i) / \(pct)")
-					}
-					pointsAlongPath.append(p)
-				}
-
-			}
-			
 			tracingIDX = 0
 			//assitedLayers[tracingIDX].opacity = 1.0
 			closeLayer.opacity = 1.0
-			showClosest = true
-			print("3")
+			
+			step += 1
 			return()
 		}
 		
@@ -219,253 +172,9 @@ class DemoViewController: UIViewController {
 				cc.path = dPath.cgPath
 			}
 			
-			tracingIDX = 0
-			//assitedLayers[tracingIDX].opacity = 1.0
-			closeLayer.opacity = 1.0
-			
 			return()
 		}
-		
 		if step == 5 {
-			infoLabel.text = "Closest: 0  Pct: 0%"
-			infoLabel.isHidden = false
-			print("start")
-			isTracing = true
-
-			CATransaction.begin()
-			CATransaction.setDisableActions(true)
-			
-			dPath = MyBezierPath()
-			dPath.move(to: p)
-			
-			for cc in drawLayers {
-				cc.opacity = 0.0
-				cc.path = dPath.cgPath
-			}
-			tracingIDX = 0
-			assitedLayers[tracingIDX].strokeEnd = 0.0
-			assitedLayers[tracingIDX].opacity = 1.0
-			closeLayer.opacity = 1.0
-			CATransaction.commit()
-
-			return()
-		}
-		if step == 6 {
-			print("using Max")
-			return()
-		}
-		
-		if step == 7 {
-			infoLabel.text = "calculate 100 points"
-			
-			numPointsOnPath = 100
-			pointsAlongPath = []
-			
-			CATransaction.begin()
-			CATransaction.setDisableActions(true)
-
-			for (i, pth) in strokePathsArray.enumerated() {
-				let cpth = pth.cgPath.copy(using: &defaultTransform)!
-				var pctPoints: [CGPoint] = []
-				for i in 0...numPointsOnPath {
-					let pct = CGFloat(i) / CGFloat(numPointsOnPath)
-					guard let p = cpth.point(at: pct) else {
-						fatalError("could not get point at: \(i) / \(pct)")
-					}
-					pctPoints.append(p)
-				}
-				pointsAlongPath.append(pctPoints)
-				
-				let dPath = UIBezierPath()
-				r = .init(x: 0, y: 0, width: 2, height: 2)
-				d = r.width * 0.5
-				for pt in pctPoints {
-					r.origin = .init(x: pt.x - d, y: pt.y - d)
-					dPath.append(UIBezierPath(ovalIn: r))
-				}
-				ptLayers[i].path = dPath.cgPath
-				ptLayers[i].lineWidth = 0
-			}
-			
-			for cc in assitedLayers {
-				cc.strokeEnd = 0.0
-				cc.opacity = 1.0
-			}
-			CATransaction.commit()
-
-			return()
-		}
-		
-		if step == 8 {
-			print("assited with 100")
-			return()
-		}
-		
-		
-		if step == 9 {
-			isDrawing = 0
-			isTracing = false
-			
-			for cc in ptLayers {
-				cc.opacity = 0.0
-			}
-			for cc in dashLayers {
-				cc.opacity = 0.0
-			}
-			for cc in shapeLayers {
-				cc.opacity = 1.0
-			}
-			for cc in assitedLayers {
-				cc.strokeEnd = 0.0
-				cc.opacity = 1.0
-			}
-
-			infoLabel.text = "calculate \(nextNum) points"
-			
-			pointsAlongPath = []
-
-			numPointsOnPath = nextNum
-
-			showClosest = numPointsOnPath == 10
-			closeLayer.opacity = showClosest ? 1.0 : 0.0
-			
-			for (i, pth) in strokePathsArray.enumerated() {
-				let cpth = pth.cgPath.copy(using: &defaultTransform)!
-				var pctPoints: [CGPoint] = []
-				for i in 0...numPointsOnPath {
-					let pct = CGFloat(i) / CGFloat(numPointsOnPath)
-					guard let p = cpth.point(at: pct) else {
-						fatalError("could not get point at: \(i) / \(pct)")
-					}
-					pctPoints.append(p)
-				}
-				pointsAlongPath.append(pctPoints)
-				
-				let dPath = UIBezierPath()
-				r = .init(x: 0, y: 0, width: 4, height: 4)
-				d = r.width * 0.5
-				for pt in pctPoints {
-					r.origin = .init(x: pt.x - d, y: pt.y - d)
-					dPath.append(UIBezierPath(ovalIn: r))
-				}
-				ptLayers[i].path = dPath.cgPath
-				ptLayers[i].lineWidth = numPointsOnPath == 10 ? 1.0 : 0.0
-			}
-			
-			tracingIDX = -1
-			pathToShow = 0
-			
-			step += 1
-			return()
-		}
-		
-		if step == 10 {
-			maxIDX = 0
-			for i in 0..<shapeLayers.count {
-				dashLayers[i].opacity = i == pathToShow ? 1.0 : 0.0
-			}
-			tracingIDX += 1
-			traceLayer.path = dashLayers[tracingIDX].path
-			step += 1
-			if numPointsOnPath == 100 {
-				step += 1
-			}
-			return()
-		}
-		if step == 11 {
-			for i in 0..<shapeLayers.count {
-				ptLayers[i].opacity = i == pathToShow ? 1.0 : 0.0
-			}
-			step += 1
-			return()
-		}
-		if step == 12 {
-			maxIDX = 0
-			isTracing = true
-			step += 1
-			return()
-		}
-		if step == 13 {
-			pathToShow += 1
-			for cc in ptLayers {
-				cc.opacity = 0.0
-			}
-			for cc in dashLayers {
-				cc.opacity = 0.0
-			}
-			if pathToShow < shapeLayers.count {
-				step = 10
-			} else {
-				step += 1
-			}
-			return()
-		}
-		if step == 14 {
-			nextNum = 100
-			step = 9
-			return()
-		}
-		
-		if step == 102 {
-
-			for cc in drawLayers {
-				cc.path = nil
-				cc.opacity = 0.0
-			}
-			
-			infoLabel.text = "calculate 10 points"
-
-			numPointsOnPath = 10
-			
-			for (i, pth) in strokePathsArray.enumerated() {
-				let cpth = pth.cgPath.copy(using: &defaultTransform)!
-				var pctPoints: [CGPoint] = []
-				for i in 0...numPointsOnPath {
-					let pct = CGFloat(i) / CGFloat(numPointsOnPath)
-					guard let p = cpth.point(at: pct) else {
-						fatalError("could not get point at: \(i) / \(pct)")
-					}
-					pctPoints.append(p)
-				}
-				pointsAlongPath.append(pctPoints)
-				
-				let dPath = UIBezierPath()
-				r = .init(x: 0, y: 0, width: 4, height: 4)
-				d = r.width * 0.5
-				for pt in pctPoints {
-					r.origin = .init(x: pt.x - d, y: pt.y - d)
-					dPath.append(UIBezierPath(ovalIn: r))
-				}
-				ptLayers[i].path = dPath.cgPath
-				ptLayers[i].opacity = i == 0 ? 1.0 : 0.0
-			}
-			
-			tracingIDX = 0
-			//assitedLayers[tracingIDX].opacity = 1.0
-			closeLayer.opacity = 1.0
-			
-			step += 1
-			return()
-		}
-		
-		if step == 104 {
-			infoLabel.text = "Closest: 0  Pct: 0%"
-			infoLabel.isHidden = false
-			print("start")
-			isTracing = true
-			closeLayer.opacity = 1.0
-			
-			dPath = MyBezierPath()
-			dPath.move(to: p)
-			
-			for cc in drawLayers {
-				cc.opacity = 0.0
-				cc.path = dPath.cgPath
-			}
-			
-			return()
-		}
-		if step == 105 {
 			maxIDX = 0
 			infoLabel.text = "Closest: 0  Max: 0  Pct: 0%"
 			for cc in drawLayers {
@@ -476,7 +185,7 @@ class DemoViewController: UIViewController {
 			//step += 1
 			return()
 		}
-		if step == 106 {
+		if step == 6 {
 			infoLabel.text = "Closest: 0  Max: 0  Pct: 0%"
 			infoLabel.isHidden = false
 			print("start")
@@ -491,13 +200,13 @@ class DemoViewController: UIViewController {
 				cc.opacity = 1.0
 				cc.path = dPath.cgPath
 			}
-
+			
 			assitedLayers[0].strokeEnd = 0.0
-
+			
 			return()
 		}
-
-		if step == 107 {
+		
+		if step == 7 {
 			infoLabel.text = "Closest: 0  Max: 0  Pct: 0%"
 			infoLabel.isHidden = false
 			print("start")
@@ -516,31 +225,31 @@ class DemoViewController: UIViewController {
 			return()
 		}
 		
-		if step == 108 {
+		if step == 8 {
 			assitedLayers[0].opacity = 1.0
 			
 			return()
 		}
-		if step == 109 {
-
+		if step == 9 {
+			
 			infoLabel.text = "calculate 100 points"
 			
 			assitedLayers[0].opacity = 0.0
-
-			numPointsOnPath = 100
-			pointsAlongPath = []
+			
+			numPercentagePoints = 100
+			percentagePoints = []
 			
 			for (i, pth) in strokePathsArray.enumerated() {
 				let cpth = pth.cgPath.copy(using: &defaultTransform)!
 				var pctPoints: [CGPoint] = []
-				for i in 0...numPointsOnPath {
-					let pct = CGFloat(i) / CGFloat(numPointsOnPath)
+				for i in 0...numPercentagePoints {
+					let pct = CGFloat(i) / CGFloat(numPercentagePoints)
 					guard let p = cpth.point(at: pct) else {
 						fatalError("could not get point at: \(i) / \(pct)")
 					}
 					pctPoints.append(p)
 				}
-				pointsAlongPath.append(pctPoints)
+				percentagePoints.append(pctPoints)
 				
 				let dPath = UIBezierPath()
 				r = .init(x: 0, y: 0, width: 2, height: 2)
@@ -557,28 +266,28 @@ class DemoViewController: UIViewController {
 			return()
 		}
 		
-		if step == 110 {
+		if step == 10 {
 			// tracking closest point with 100
 		}
 		
-		if step == 111 {
-
+		if step == 11 {
+			
 			infoLabel.text = "calculate 10 points"
 			
-			numPointsOnPath = 10
-			pointsAlongPath = []
+			numPercentagePoints = 10
+			percentagePoints = []
 			
 			for (i, pth) in strokePathsArray.enumerated() {
 				let cpth = pth.cgPath.copy(using: &defaultTransform)!
 				var pctPoints: [CGPoint] = []
-				for i in 0...numPointsOnPath {
-					let pct = CGFloat(i) / CGFloat(numPointsOnPath)
+				for i in 0...numPercentagePoints {
+					let pct = CGFloat(i) / CGFloat(numPercentagePoints)
 					guard let p = cpth.point(at: pct) else {
 						fatalError("could not get point at: \(i) / \(pct)")
 					}
 					pctPoints.append(p)
 				}
-				pointsAlongPath.append(pctPoints)
+				percentagePoints.append(pctPoints)
 				
 				let dPath = UIBezierPath()
 				r = .init(x: 0, y: 0, width: 4, height: 4)
@@ -605,7 +314,7 @@ class DemoViewController: UIViewController {
 			step += 1
 			return()
 		}
-		if step == 112 {
+		if step == 12 {
 			// show pts [0]
 			ptLayers[pathToShow].opacity = 1.0
 			isShowingPaths = false
@@ -613,13 +322,13 @@ class DemoViewController: UIViewController {
 			return()
 		}
 		
-		if step == 113 {
+		if step == 13 {
 			return()
 			pathToShow += 1
 			step += 1
 		}
 		
-		if step == 114 {
+		if step == 14 {
 			for i in 0..<shapeLayers.count {
 				ptLayers[i].opacity = 0.0
 				dashLayers[i].opacity = 0.0
@@ -629,36 +338,36 @@ class DemoViewController: UIViewController {
 			step -= 2
 			return()
 		}
-		if step == 114 {
+		if step == 14 {
 			// show pts [1]
 			ptLayers[pathToShow].opacity = 1.0
 			pathToShow += 1
 			if pathToShow < shapeLayers.count {
 				step -= 1
-			} else { 
+			} else {
 				step += 1
 			}
 			return()
 		}
-
-		if step == 115 {
+		
+		if step == 15 {
 			
 			infoLabel.text = "calculate 100 points"
 			
-			numPointsOnPath = 100
-			pointsAlongPath = []
+			numPercentagePoints = 100
+			percentagePoints = []
 			
 			for (i, pth) in strokePathsArray.enumerated() {
 				let cpth = pth.cgPath.copy(using: &defaultTransform)!
 				var pctPoints: [CGPoint] = []
-				for i in 0...numPointsOnPath {
-					let pct = CGFloat(i) / CGFloat(numPointsOnPath)
+				for i in 0...numPercentagePoints {
+					let pct = CGFloat(i) / CGFloat(numPercentagePoints)
 					guard let p = cpth.point(at: pct) else {
 						fatalError("could not get point at: \(i) / \(pct)")
 					}
 					pctPoints.append(p)
 				}
-				pointsAlongPath.append(pctPoints)
+				percentagePoints.append(pctPoints)
 				
 				let dPath = UIBezierPath()
 				r = .init(x: 0, y: 0, width: 2, height: 2)
@@ -691,14 +400,14 @@ class DemoViewController: UIViewController {
 			step += 1
 			return()
 		}
-		if step == 116 {
+		if step == 16 {
 			// show pts [0]
 			ptLayers[pathToShow].opacity = 1.0
 			pathToShow += 1
 			step += 1
 			return()
 		}
-		if step == 117 {
+		if step == 17 {
 			for i in 0..<shapeLayers.count {
 				ptLayers[i].opacity = 0.0
 				dashLayers[i].opacity = 0.0
@@ -708,7 +417,7 @@ class DemoViewController: UIViewController {
 			step += 1
 			return()
 		}
-		if step == 118 {
+		if step == 18 {
 			// show pts [1]
 			ptLayers[pathToShow].opacity = 1.0
 			pathToShow += 1
@@ -719,9 +428,9 @@ class DemoViewController: UIViewController {
 			}
 			return()
 		}
-
-
-		if step == 124 {
+		
+		
+		if step == 24 {
 			for i in 0..<shapeLayers.count {
 				ptLayers[i].opacity = 0.0
 				dashLayers[i].opacity = 0.0
@@ -731,7 +440,7 @@ class DemoViewController: UIViewController {
 			step += 1
 			return()
 		}
-		if step == 124 {
+		if step == 24 {
 			pathToShow += 1
 			if pathToShow == shapeLayers.count {
 				step += 1
@@ -740,24 +449,24 @@ class DemoViewController: UIViewController {
 			return()
 		}
 		
-		if step == 123 {
+		if step == 23 {
 			
 			infoLabel.text = "calculate 100 points"
 			
-			numPointsOnPath = 100
-			pointsAlongPath = []
+			numPercentagePoints = 100
+			percentagePoints = []
 			
 			for (i, pth) in strokePathsArray.enumerated() {
 				let cpth = pth.cgPath.copy(using: &defaultTransform)!
 				var pctPoints: [CGPoint] = []
-				for i in 0...numPointsOnPath {
-					let pct = CGFloat(i) / CGFloat(numPointsOnPath)
+				for i in 0...numPercentagePoints {
+					let pct = CGFloat(i) / CGFloat(numPercentagePoints)
 					guard let p = cpth.point(at: pct) else {
 						fatalError("could not get point at: \(i) / \(pct)")
 					}
 					pctPoints.append(p)
 				}
-				pointsAlongPath.append(pctPoints)
+				percentagePoints.append(pctPoints)
 				
 				let dPath = UIBezierPath()
 				r = .init(x: 0, y: 0, width: 2, height: 2)
@@ -780,7 +489,7 @@ class DemoViewController: UIViewController {
 			step += 1
 			return()
 		}
-		if step == 124 {
+		if step == 24 {
 			for i in 0..<shapeLayers.count {
 				ptLayers[i].opacity = i == pathToShow ? 1.0 : 0.0
 				dashLayers[i].opacity = i == pathToShow ? 1.0 : 0.0
@@ -791,14 +500,14 @@ class DemoViewController: UIViewController {
 			}
 			return()
 		}
-
-		if step == 125 {
+		
+		if step == 25 {
 			isDrawing = 1
 			dPath.move(to: p)
 			step += 1
 			return()
 		}
-		if step == 126 {
+		if step == 26 {
 			isTracing = false
 			for cc in ptLayers {
 				cc.opacity = 0.0
@@ -809,14 +518,13 @@ class DemoViewController: UIViewController {
 			return()
 		}
 	}
-	
-	var lastPCT: CGFloat = 0.0
-	
 	override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
 		
 		guard let t = touches.first else { return }
-		let p: CGPoint = t.location(in: self.view)
-		let dp: CGPoint = p
+		var p: CGPoint = t.location(in: self.view)
+		var dp: CGPoint = p
+		//		dp.x += 374
+		//		dp.y += 45
 		
 		if isShowingPaths {
 			return()
@@ -824,66 +532,50 @@ class DemoViewController: UIViewController {
 		
 		imgView.isHidden = false
 		
-		CATransaction.begin()
-		CATransaction.setDisableActions(true)
 		if isDrawing == 1 {
 			dPath.addLine(to: p)
 			imgView.frame.origin = dp
 			for cc in drawLayers {
 				cc.path = dPath.cgPath
 			}
-			if !showClosest {
+			if !isTracing {
 				infoLabel.text = "Trace Len: \(Int(traceLength))  User Len: \(Int(dPath.length))"
+				return()
 			}
-			if showAssist {
-				let pct = dPath.length / traceLength
-				if lastPCT != pct {
-					lastPCT = pct
-					assitedLayers[0].strokeEnd = pct
-				}
-			}
-			//	return()
-			//}
 		}
-		CATransaction.commit()
-
-		if tracingIDX == -1 || tracingIDX > assitedLayers.count - 1 { return }
-
-		CATransaction.begin()
-		CATransaction.setDisableActions(true)
 		
-		if let pIDX = findClosestPointIndex(to: p, in: pointsAlongPath[tracingIDX]) {
-			if step > 5 {
+		if tracingIDX == -1 || tracingIDX > assitedLayers.count - 1 { return }
+		if let pIDX = findClosestPointIndex(to: p, in: percentagePoints[tracingIDX]) {
+			if step > 4 {
 				maxIDX = max(maxIDX, pIDX)
 			} else {
 				maxIDX = pIDX
 			}
-			var pp = pointsAlongPath[tracingIDX][pIDX]
-			if numPointsOnPath == 100 {
+			var pp = percentagePoints[tracingIDX][pIDX]
+			if numPercentagePoints == 100 {
 				pp.x += 0.5
 			}
 			let cPath = UIBezierPath()
 			cPath.move(to: .init(x: dp.x + 1, y: dp.y))
 			cPath.addLine(to: pp)
+			CATransaction.begin()
+			CATransaction.setDisableActions(false)
 			closeLayer.path = cPath.cgPath
-			let pct = CGFloat(maxIDX) / CGFloat(numPointsOnPath)
-			if lastPCT != pct {
-				assitedLayers[tracingIDX].strokeEnd = CGFloat(maxIDX) / CGFloat(numPointsOnPath)
-			}
-			let spct = String(format: "%0.0f", (CGFloat(maxIDX) / CGFloat(numPointsOnPath)) * 100.0)
-			if step > 5 {
-				infoLabel.text = "Closest: \(pIDX)  Max: \(maxIDX)  Pct: \(spct)%"
+			assitedLayers[tracingIDX].strokeEnd = CGFloat(maxIDX) / CGFloat(numPercentagePoints)
+			CATransaction.commit()
+			let pct = String(format: "%0.0f", (CGFloat(maxIDX) / CGFloat(numPercentagePoints)) * 100.0)
+			if step > 4 {
+				infoLabel.text = "Closest: \(pIDX)  Max: \(maxIDX)  Pct: \(pct)%"
 			} else {
-				infoLabel.text = "Closest: \(pIDX)  Pct: \(spct)%"
+				infoLabel.text = "Closest: \(pIDX)  Pct: \(pct)%"
 			}
 		}
-		CATransaction.commit()
 		imgView.frame.origin = dp
 	}
 	override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
 		print("touch ended")
 		closeLayer.path = nil
-		lastPCT = 0.0
+		
 		imgView.isHidden = true
 		
 		if isShowingPaths {
@@ -898,7 +590,7 @@ class DemoViewController: UIViewController {
 		
 		if !isTracing { return }
 		
-		if maxIDX < numPointsOnPath {
+		if maxIDX < numPercentagePoints {
 			maxIDX = 0
 			imgView.frame.origin = .zero
 			return()
@@ -909,7 +601,7 @@ class DemoViewController: UIViewController {
 		imgView.frame.origin = .zero
 		closeLayer.path = nil
 		for (i, cc) in ptLayers.enumerated() {
-			//cc.opacity = i == tracingIDX ? 1.0 : 0.0
+			cc.opacity = i == tracingIDX ? 1.0 : 0.0
 		}
 		for (i, cc) in dashLayers.enumerated() {
 			cc.opacity = i == tracingIDX ? 1.0 : 0.0
@@ -1135,7 +827,7 @@ class DemoViewController: UIViewController {
 		drawLayer.lineJoin = .round
 		self.targetView.layer.addSublayer(drawLayer)
 		drawLayers.append(drawLayer)
-	
+		
 		for cc in shapeLayers {
 			cc.opacity = 0.0
 		}
@@ -1160,6 +852,155 @@ class DemoViewController: UIViewController {
 		return CGPoint(x: point.x + CGFloat(cosf(Float(angle))) * distance, y: point.y + CGFloat(sinf(Float(angle))) * distance)
 	}
 	
-
+	func swiftyDraw(shouldBeginDrawingIn drawingView: SwiftyDrawView, using touch: UITouch) -> Bool {
+		
+		//		highestIDX = 0
+		
+		var b: Bool = false
+		
+		//		let point = touch.location(in: drawingView)
+		//		if pathToHitTestAgainst.contains(point) {
+		//			if let i = findClosestPointIndex(to: point, in: percentagePoints) {
+		//				if i <= proximityToStart {
+		//					b = true
+		//				}
+		//			}
+		//		}
+		//
+		//		allowTracing = b
+		
+		return b
+	}
+	func swiftyDraw(didBeginDrawingIn drawingView: SwiftyDrawView, using touch: UITouch) {
+		
+	}
+	func swiftyDraw(isDrawingIn drawingView: SwiftyDrawView, using touch: UITouch) {
+		
+		if let p = drawingView.drawItems.first {
+			print(p.path.length)
+		}
+		
+		//		if !allowTracing { return }
+		//
+		//		let point = touch.location(in: drawingView)
+		//
+		//		if !pathToHitTestAgainst.contains(point) {
+		//			allowTracing = false
+		//			drawingView.undo()
+		//			CATransaction.begin()
+		//			CATransaction.setDisableActions(false)
+		//			if self.assistiveDrawLayersArray.count > self.strokeIndex {
+		//				self.assistiveDrawLayersArray[strokeIndex].strokeEnd = 0
+		//			}
+		//			CATransaction.setCompletionBlock({
+		//				self.showTutorial()
+		//			})
+		//			CATransaction.commit()
+		//			return
+		//		}
+		//
+		//		if let i = findClosestPointIndex(to: point, in: percentagePoints) {
+		//			highestIDX = max(highestIDX, i)
+		//		}
+		//
+		//		if assistiveTouchSwitch.isOn {
+		//			let pctAlongPath = CGFloat(highestIDX) / CGFloat(numPercentagePoints)
+		//
+		//			if pctAlongPath >= pctNeededToCompleteAssisted {
+		//
+		//				CATransaction.begin()
+		//				CATransaction.setDisableActions(false)
+		//				assistiveDrawLayersArray[strokeIndex].strokeEnd = 1
+		//				assistiveDrawLayersArray[strokeIndex].strokeColor = self.colors[self.strokeIndex].cgColor
+		//				CATransaction.commit()
+		//
+		//				dashLayer.removeFromSuperlayer()
+		//				dashLayer.sublayers?.filter{ $0 is CAShapeLayer }.forEach{ $0.removeFromSuperlayer() }
+		//				drawingView.clear()
+		//
+		//				allowTracing = false
+		//
+		//				if strokeIndex == strokePathsArray.count-1 {
+		//					return
+		//				}
+		//
+		//				self.strokeIndex+=1
+		//				showHint()
+		//				showTutorial()
+		//
+		//			} else {
+		//
+		//				CATransaction.begin()
+		//				CATransaction.setDisableActions(true)
+		//				assistiveDrawLayersArray[strokeIndex].strokeEnd = pctAlongPath
+		//				CATransaction.commit()
+		//
+		//			}
+		//		}
+		
+	}
+	func swiftyDraw(didFinishDrawingIn drawingView: SwiftyDrawView, using touch: UITouch) {
+		
+		if let p = drawingView.drawItems.first {
+			print(p.path)
+		}
+		
+		//		if !allowTracing { return }
+		//
+		//		if assistiveTouchSwitch.isOn {
+		//			allowTracing = false
+		//			drawingView.undo()
+		//			CATransaction.begin()
+		//			CATransaction.setDisableActions(false)
+		//			if self.assistiveDrawLayersArray.count > self.strokeIndex {
+		//				self.assistiveDrawLayersArray[strokeIndex].strokeEnd = 0
+		//			}
+		//			CATransaction.setCompletionBlock({
+		//				self.showTutorial()
+		//			})
+		//			CATransaction.commit()
+		//			return
+		//		}
+		//		print(drawingView.drawItems.last?.path)
+		//		print(drawingView.drawItems.last?.path.length)
+		//		print(currentPathToTrace.length)
+		//		let pctAlongPath = CGFloat(highestIDX) / CGFloat(numPercentagePoints)
+		//
+		//		if pctAlongPath < pctNeededToCompleteNonAssisted {
+		//			allowTracing = false
+		//			drawingView.undo()
+		//			showTutorial()
+		//			return
+		//		}
+		//
+		//		dashLayer.removeFromSuperlayer()
+		//		dashLayer.sublayers?.filter{ $0 is CAShapeLayer }.forEach{ $0.removeFromSuperlayer() }
+		//
+		//		let layer = CAShapeLayer()
+		//		layer.fillColor = UIColor.clear.cgColor
+		//		layer.lineWidth = 10
+		//		layer.lineCap = .round
+		//		layer.strokeColor = self.accentColor.cgColor
+		//		layer.strokeColor = self.colors[self.strokeIndex].cgColor
+		//		if let drawItem = drawingView.drawItems.last {
+		//			layer.path = drawItem.path
+		//		}
+		//		self.canvasView.layer.addSublayer(layer)
+		//
+		//		drawingView.clear()
+		//
+		//		if strokeIndex == strokePathsArray.count-1 {
+		//			return
+		//		}
+		//
+		//		self.strokeIndex+=1
+		//		showHint()
+		//		showTutorial()
+		
+	}
+	
+	func swiftyDraw(didCancelDrawingIn drawingView: SwiftyDrawView, using touch: UITouch) {
+		
+	}
+	
 }
-
