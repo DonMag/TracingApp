@@ -85,9 +85,7 @@ class DemoViewController: UIViewController {
 		
 		guard let t = touches.first else { return }
 		let p: CGPoint = t.location(in: self.view)
-		var dp: CGPoint = p
-		//		dp.x += 374
-		//		dp.y += 45
+		let dp: CGPoint = p
 		
 		if step == 0 {
 			dPath = MyBezierPath()
@@ -153,7 +151,7 @@ class DemoViewController: UIViewController {
 			infoLabel.text = "calculate 10 points"
 			
 			pointsAlongPath = []
-
+			
 			numPointsOnPath = 10
 			
 			for (i, pth) in strokePathsArray.enumerated() {
@@ -177,23 +175,6 @@ class DemoViewController: UIViewController {
 				}
 				ptLayers[i].path = dPath.cgPath
 				ptLayers[i].opacity = i == 0 ? 1.0 : 0.0
-			}
-			
-			if false {
-				let path = MyBezierPath(svgPath: "m 17.899207,12.838052 c 24.277086,0 48.554171,0 72.831257,0")
-				let cpth = path.cgPath.copy(using: &defaultTransform)!
-				
-				numPointsOnPath = 10
-				var pointsAlongPath: [CGPoint] = []
-
-				for i in 0...numPointsOnPath {
-					let pct = CGFloat(i) / CGFloat(numPointsOnPath)
-					guard let p = cpth.point(at: pct) else {
-						fatalError("could not get point at: \(i) / \(pct)")
-					}
-					pointsAlongPath.append(p)
-				}
-
 			}
 			
 			tracingIDX = 0
@@ -231,7 +212,7 @@ class DemoViewController: UIViewController {
 			infoLabel.isHidden = false
 			print("start")
 			isTracing = true
-
+			
 			CATransaction.begin()
 			CATransaction.setDisableActions(true)
 			
@@ -247,7 +228,7 @@ class DemoViewController: UIViewController {
 			assitedLayers[tracingIDX].opacity = 1.0
 			closeLayer.opacity = 1.0
 			CATransaction.commit()
-
+			
 			return()
 		}
 		if step == 6 {
@@ -263,7 +244,7 @@ class DemoViewController: UIViewController {
 			
 			CATransaction.begin()
 			CATransaction.setDisableActions(true)
-
+			
 			for (i, pth) in strokePathsArray.enumerated() {
 				let cpth = pth.cgPath.copy(using: &defaultTransform)!
 				var pctPoints: [CGPoint] = []
@@ -292,7 +273,7 @@ class DemoViewController: UIViewController {
 				cc.opacity = 1.0
 			}
 			CATransaction.commit()
-
+			
 			return()
 		}
 		
@@ -319,13 +300,13 @@ class DemoViewController: UIViewController {
 				cc.strokeEnd = 0.0
 				cc.opacity = 1.0
 			}
-
+			
 			infoLabel.text = "calculate \(nextNum) points"
 			
 			pointsAlongPath = []
-
+			
 			numPointsOnPath = nextNum
-
+			
 			showClosest = numPointsOnPath == 10
 			closeLayer.opacity = showClosest ? 1.0 : 0.0
 			
@@ -405,409 +386,6 @@ class DemoViewController: UIViewController {
 			step = 9
 			return()
 		}
-		
-		if step == 102 {
-
-			for cc in drawLayers {
-				cc.path = nil
-				cc.opacity = 0.0
-			}
-			
-			infoLabel.text = "calculate 10 points"
-
-			numPointsOnPath = 10
-			
-			for (i, pth) in strokePathsArray.enumerated() {
-				let cpth = pth.cgPath.copy(using: &defaultTransform)!
-				var pctPoints: [CGPoint] = []
-				for i in 0...numPointsOnPath {
-					let pct = CGFloat(i) / CGFloat(numPointsOnPath)
-					guard let p = cpth.point(at: pct) else {
-						fatalError("could not get point at: \(i) / \(pct)")
-					}
-					pctPoints.append(p)
-				}
-				pointsAlongPath.append(pctPoints)
-				
-				let dPath = UIBezierPath()
-				r = .init(x: 0, y: 0, width: 4, height: 4)
-				d = r.width * 0.5
-				for pt in pctPoints {
-					r.origin = .init(x: pt.x - d, y: pt.y - d)
-					dPath.append(UIBezierPath(ovalIn: r))
-				}
-				ptLayers[i].path = dPath.cgPath
-				ptLayers[i].opacity = i == 0 ? 1.0 : 0.0
-			}
-			
-			tracingIDX = 0
-			//assitedLayers[tracingIDX].opacity = 1.0
-			closeLayer.opacity = 1.0
-			
-			step += 1
-			return()
-		}
-		
-		if step == 104 {
-			infoLabel.text = "Closest: 0  Pct: 0%"
-			infoLabel.isHidden = false
-			print("start")
-			isTracing = true
-			closeLayer.opacity = 1.0
-			
-			dPath = MyBezierPath()
-			dPath.move(to: p)
-			
-			for cc in drawLayers {
-				cc.opacity = 0.0
-				cc.path = dPath.cgPath
-			}
-			
-			return()
-		}
-		if step == 105 {
-			maxIDX = 0
-			infoLabel.text = "Closest: 0  Max: 0  Pct: 0%"
-			for cc in drawLayers {
-				cc.path = nil
-			}
-			closeLayer.path = nil
-			
-			//step += 1
-			return()
-		}
-		if step == 106 {
-			infoLabel.text = "Closest: 0  Max: 0  Pct: 0%"
-			infoLabel.isHidden = false
-			print("start")
-			isTracing = true
-			closeLayer.opacity = 1.0
-			maxIDX = 0
-			
-			dPath = MyBezierPath()
-			dPath.move(to: p)
-			
-			for cc in drawLayers {
-				cc.opacity = 1.0
-				cc.path = dPath.cgPath
-			}
-
-			assitedLayers[0].strokeEnd = 0.0
-
-			return()
-		}
-
-		if step == 107 {
-			infoLabel.text = "Closest: 0  Max: 0  Pct: 0%"
-			infoLabel.isHidden = false
-			print("start")
-			maxIDX = 0
-			isTracing = true
-			
-			dPath = MyBezierPath()
-			dPath.move(to: p)
-			for cc in drawLayers {
-				cc.opacity = 0.0
-				cc.path = dPath.cgPath
-			}
-			assitedLayers[0].strokeEnd = 0.0
-			
-			//step += 1
-			return()
-		}
-		
-		if step == 108 {
-			assitedLayers[0].opacity = 1.0
-			
-			return()
-		}
-		if step == 109 {
-
-			infoLabel.text = "calculate 100 points"
-			
-			assitedLayers[0].opacity = 0.0
-
-			numPointsOnPath = 100
-			pointsAlongPath = []
-			
-			for (i, pth) in strokePathsArray.enumerated() {
-				let cpth = pth.cgPath.copy(using: &defaultTransform)!
-				var pctPoints: [CGPoint] = []
-				for i in 0...numPointsOnPath {
-					let pct = CGFloat(i) / CGFloat(numPointsOnPath)
-					guard let p = cpth.point(at: pct) else {
-						fatalError("could not get point at: \(i) / \(pct)")
-					}
-					pctPoints.append(p)
-				}
-				pointsAlongPath.append(pctPoints)
-				
-				let dPath = UIBezierPath()
-				r = .init(x: 0, y: 0, width: 2, height: 2)
-				d = r.width * 0.5
-				for pt in pctPoints {
-					r.origin = .init(x: pt.x - d, y: pt.y - d)
-					dPath.append(UIBezierPath(ovalIn: r))
-				}
-				ptLayers[i].path = dPath.cgPath
-				ptLayers[i].lineWidth = 0
-			}
-			
-			pathToShow = 0
-			return()
-		}
-		
-		if step == 110 {
-			// tracking closest point with 100
-		}
-		
-		if step == 111 {
-
-			infoLabel.text = "calculate 10 points"
-			
-			numPointsOnPath = 10
-			pointsAlongPath = []
-			
-			for (i, pth) in strokePathsArray.enumerated() {
-				let cpth = pth.cgPath.copy(using: &defaultTransform)!
-				var pctPoints: [CGPoint] = []
-				for i in 0...numPointsOnPath {
-					let pct = CGFloat(i) / CGFloat(numPointsOnPath)
-					guard let p = cpth.point(at: pct) else {
-						fatalError("could not get point at: \(i) / \(pct)")
-					}
-					pctPoints.append(p)
-				}
-				pointsAlongPath.append(pctPoints)
-				
-				let dPath = UIBezierPath()
-				r = .init(x: 0, y: 0, width: 4, height: 4)
-				d = r.width * 0.5
-				for pt in pctPoints {
-					r.origin = .init(x: pt.x - d, y: pt.y - d)
-					dPath.append(UIBezierPath(ovalIn: r))
-				}
-				ptLayers[i].path = dPath.cgPath
-				ptLayers[i].lineWidth = 1
-			}
-			
-			for cc in ptLayers {
-				cc.opacity = 0.0
-			}
-			for cc in shapeLayers {
-				cc.opacity = 1.0
-			}
-			for cc in assitedLayers {
-				cc.strokeEnd = 0.0
-				cc.opacity = 1.0
-			}
-			isShowingPaths = true
-			step += 1
-			return()
-		}
-		if step == 112 {
-			// show pts [0]
-			ptLayers[pathToShow].opacity = 1.0
-			isShowingPaths = false
-			tracingIDX = pathToShow
-			return()
-		}
-		
-		if step == 113 {
-			return()
-			pathToShow += 1
-			step += 1
-		}
-		
-		if step == 114 {
-			for i in 0..<shapeLayers.count {
-				ptLayers[i].opacity = 0.0
-				dashLayers[i].opacity = 0.0
-			}
-			// show dash [1]
-			dashLayers[pathToShow].opacity = 1.0
-			step -= 2
-			return()
-		}
-		if step == 114 {
-			// show pts [1]
-			ptLayers[pathToShow].opacity = 1.0
-			pathToShow += 1
-			if pathToShow < shapeLayers.count {
-				step -= 1
-			} else { 
-				step += 1
-			}
-			return()
-		}
-
-		if step == 115 {
-			
-			infoLabel.text = "calculate 100 points"
-			
-			numPointsOnPath = 100
-			pointsAlongPath = []
-			
-			for (i, pth) in strokePathsArray.enumerated() {
-				let cpth = pth.cgPath.copy(using: &defaultTransform)!
-				var pctPoints: [CGPoint] = []
-				for i in 0...numPointsOnPath {
-					let pct = CGFloat(i) / CGFloat(numPointsOnPath)
-					guard let p = cpth.point(at: pct) else {
-						fatalError("could not get point at: \(i) / \(pct)")
-					}
-					pctPoints.append(p)
-				}
-				pointsAlongPath.append(pctPoints)
-				
-				let dPath = UIBezierPath()
-				r = .init(x: 0, y: 0, width: 2, height: 2)
-				d = r.width * 0.5
-				for pt in pctPoints {
-					r.origin = .init(x: pt.x - d, y: pt.y - d)
-					dPath.append(UIBezierPath(ovalIn: r))
-				}
-				ptLayers[i].path = dPath.cgPath
-				ptLayers[i].lineWidth = 0
-			}
-			
-			for cc in ptLayers {
-				cc.opacity = 0.0
-			}
-			for cc in dashLayers {
-				cc.opacity = 0.0
-			}
-			for cc in shapeLayers {
-				cc.opacity = 1.0
-			}
-			isShowingPaths = true
-			pathToShow = 0
-			for i in 0..<shapeLayers.count {
-				ptLayers[i].opacity = 0.0
-				dashLayers[i].opacity = 0.0
-			}
-			// show dash [1]
-			dashLayers[pathToShow].opacity = 1.0
-			step += 1
-			return()
-		}
-		if step == 116 {
-			// show pts [0]
-			ptLayers[pathToShow].opacity = 1.0
-			pathToShow += 1
-			step += 1
-			return()
-		}
-		if step == 117 {
-			for i in 0..<shapeLayers.count {
-				ptLayers[i].opacity = 0.0
-				dashLayers[i].opacity = 0.0
-			}
-			// show dash [1]
-			dashLayers[pathToShow].opacity = 1.0
-			step += 1
-			return()
-		}
-		if step == 118 {
-			// show pts [1]
-			ptLayers[pathToShow].opacity = 1.0
-			pathToShow += 1
-			if pathToShow < shapeLayers.count {
-				step -= 1
-			} else {
-				step += 1
-			}
-			return()
-		}
-
-
-		if step == 124 {
-			for i in 0..<shapeLayers.count {
-				ptLayers[i].opacity = 0.0
-				dashLayers[i].opacity = 0.0
-			}
-			// show dash [1]
-			dashLayers[pathToShow].opacity = 1.0
-			step += 1
-			return()
-		}
-		if step == 124 {
-			pathToShow += 1
-			if pathToShow == shapeLayers.count {
-				step += 1
-				pathToShow = 0
-			}
-			return()
-		}
-		
-		if step == 123 {
-			
-			infoLabel.text = "calculate 100 points"
-			
-			numPointsOnPath = 100
-			pointsAlongPath = []
-			
-			for (i, pth) in strokePathsArray.enumerated() {
-				let cpth = pth.cgPath.copy(using: &defaultTransform)!
-				var pctPoints: [CGPoint] = []
-				for i in 0...numPointsOnPath {
-					let pct = CGFloat(i) / CGFloat(numPointsOnPath)
-					guard let p = cpth.point(at: pct) else {
-						fatalError("could not get point at: \(i) / \(pct)")
-					}
-					pctPoints.append(p)
-				}
-				pointsAlongPath.append(pctPoints)
-				
-				let dPath = UIBezierPath()
-				r = .init(x: 0, y: 0, width: 2, height: 2)
-				d = r.width * 0.5
-				for pt in pctPoints {
-					r.origin = .init(x: pt.x - d, y: pt.y - d)
-					dPath.append(UIBezierPath(ovalIn: r))
-				}
-				ptLayers[i].path = dPath.cgPath
-				ptLayers[i].lineWidth = 0
-			}
-			
-			for cc in ptLayers {
-				cc.opacity = 0.0
-			}
-			for cc in shapeLayers {
-				cc.opacity = 1.0
-			}
-			isShowingPaths = true
-			step += 1
-			return()
-		}
-		if step == 124 {
-			for i in 0..<shapeLayers.count {
-				ptLayers[i].opacity = i == pathToShow ? 1.0 : 0.0
-				dashLayers[i].opacity = i == pathToShow ? 1.0 : 0.0
-			}
-			pathToShow += 1
-			if pathToShow == shapeLayers.count {
-				step += 1
-			}
-			return()
-		}
-
-		if step == 125 {
-			isDrawing = 1
-			dPath.move(to: p)
-			step += 1
-			return()
-		}
-		if step == 126 {
-			isTracing = false
-			for cc in ptLayers {
-				cc.opacity = 0.0
-			}
-			imgView.frame.origin = .zero
-			
-			step += 1
-			return()
-		}
 	}
 	
 	var lastPCT: CGFloat = 0.0
@@ -842,8 +420,6 @@ class DemoViewController: UIViewController {
 					assitedLayers[0].strokeEnd = pct
 				}
 			}
-			//	return()
-			//}
 		}
 		CATransaction.commit()
 
@@ -904,13 +480,9 @@ class DemoViewController: UIViewController {
 			return()
 		}
 		
-		//tracingIDX += 1
 		infoLabel.text = "Closest: 0  Max: 0  Pct: 0%"
 		imgView.frame.origin = .zero
 		closeLayer.path = nil
-		for (i, cc) in ptLayers.enumerated() {
-			//cc.opacity = i == tracingIDX ? 1.0 : 0.0
-		}
 		for (i, cc) in dashLayers.enumerated() {
 			cc.opacity = i == tracingIDX ? 1.0 : 0.0
 		}

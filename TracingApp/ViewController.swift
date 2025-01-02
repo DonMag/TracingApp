@@ -11,211 +11,17 @@ import SwiftyDraw
 class ViewController: UIViewController, SwiftyDrawViewDelegate {
 	
 	var colors: [UIColor] = [
-		.green, .yellow, .systemYellow,
+		.green, .cyan, .systemYellow,
 	]
-	
-	func xswiftyDraw(shouldBeginDrawingIn drawingView: SwiftyDrawView, using touch: UITouch) -> Bool {
 		
-		print("should begin")
-		return false
-		
-		let point = touch.location(in: drawingView)
-		
-		allowTracing = false
-		
-		// don't allow tracing if touch did not START inside pathToHitTestAgainst
-		if pathToHitTestAgainst.contains(point) {
-			if let i = findClosestPointIndex(to: point, in: percentagePoints) {
-				// starting trace must be at the beginning of the current path
-				// if this is the FIRST touch inside pathToHitTestAgainst
-				//	AND it is farther than proximityToStart interpolated points from the start
-				//		disable tracing until touch-up
-				//		and don't do anything else
-				if highestIDX == 0 && i > proximityToStart {
-					allowTracing = false
-				} else {
-					allowTracing = true
-				}
-			}
-		}
-
-		//	reset highestIDX
-		highestIDX = 0
-
-		print("should begin", allowTracing)
-		
-		return allowTracing
-	}
-	
-	func xswiftyDraw(didBeginDrawingIn drawingView: SwiftyDrawView, using touch: UITouch) {
-
-		print("did begin")
-
-	}
-	
-	func xswiftyDraw(isDrawingIn drawingView: SwiftyDrawView, using touch: UITouch) {
-		
-		print("is drawing")
-		
-		if !allowTracing { return }
-		
-		let point = touch.location(in: drawingView)
-		
-		let iscontain = pathToHitTestAgainst.contains(point)
-		if iscontain  {
-			
-			if let i = findClosestPointIndex(to: point, in: percentagePoints) {
-				// starting trace must be at the beginning of the current path
-				// if this is the FIRST touch inside pathToHitTestAgainst
-				//	AND it is farther than proximityToStart interpolated points from the start
-				//		disable tracing until touch-up
-				//		and don't do anything else
-				if highestIDX == 0 && i > proximityToStart {
-					allowTracing = false
-					return()
-				}
-				highestIDX = max(highestIDX, i)
-			}
-			
-			let pctAlongPath = CGFloat(highestIDX) / CGFloat(numPercentagePoints)
-			
-			if self.assistiveTouchSwitch.isOn {
-				
-				// don't know what this is doing?
-				//				if let first = self.currentPathToTrace.points().first{
-				//					print("distamce:",   first.distance(to: point))
-				//					print("length: ", currentPathToTrace.length)
-				//
-				//
-				//					if first.distance(to: point)>=21 &&  assistiveDrawLayersArray[strokeIndex].strokeEnd == 0  {
-				//						print("from right")
-				//						assistiveDrawLayersArray[strokeIndex].strokeEnd = 0
-				//						showTutorial()
-				//						return
-				//					}
-				//				}
-				
-				if pctAlongPath >= pctNeededToCompleteAssisted {
-					
-					CATransaction.begin()
-					CATransaction.setDisableActions(false)
-					assistiveDrawLayersArray[strokeIndex].strokeEnd = 1
-					CATransaction.commit()
-					
-					
-					if strokeIndex == strokePathsArray.count-1{
-						dashLayer.removeFromSuperlayer()
-						dashLayer.sublayers?.filter{ $0 is CAShapeLayer }.forEach{ $0.removeFromSuperlayer() }
-						drawingView.clear()
-						return
-					}
-					
-					let layer = CAShapeLayer()
-					layer.fillColor = UIColor.clear.cgColor
-					layer.lineWidth = 10
-					layer.lineCap = .round
-					layer.strokeColor = self.accentColor.cgColor
-					if let drawItem = drawingView.drawItems.last {
-						layer.path = drawItem.path
-					}
-					self.canvasView.layer.addSublayer(layer)
-
-					dashLayer.sublayers?.filter{ $0 is CAShapeLayer }.forEach{ $0.removeFromSuperlayer() }
-					drawingView.clear()
-					self.strokeIndex+=1
-					showHint()
-					showTutorial()
-					
-				} else {
-					
-					CATransaction.begin()
-					CATransaction.setDisableActions(true)
-					assistiveDrawLayersArray[strokeIndex].strokeEnd = pctAlongPath
-					CATransaction.commit()
-					
-				}
-				
-				
-			}
-			
-		} else {
-			
-			allowTracing = false
-			
-			if assistiveDrawLayersArray.count >= strokeIndex {
-				assistiveDrawLayersArray[strokeIndex].strokeEnd = 0
-			}
-			drawingView.undo()
-			showTutorial()
-			
-		}
-	}
-
-    func xswiftyDraw(didFinishDrawingIn drawingView: SwiftyDrawView, using touch: UITouch) {
-
-		print("did finish")
-		
-		if !allowTracing { return }
-
-		allowTracing = false
-		
-		let pctAlongPath = CGFloat(highestIDX) / CGFloat(numPercentagePoints)
-
-		var completed: Bool = false
-		
-		if assistiveTouchSwitch.isOn {
-			// we will only get here if pctAlongPath is LESS THAN pctNeededToCompleteAssisted
-			completed = false
-		} else {
-			completed = pctAlongPath >= pctNeededToCompleteNonAssisted
-		}
-		
-		if !completed {
-			print("Not completed", pctAlongPath)
-			
-			allowTracing = false
-			highestIDX = 0
-			if assistiveTouchSwitch.isOn {
-				assistiveDrawLayersArray[strokeIndex].strokeEnd = 0
-			}
-			drawingView.undo()
-			showTutorial()
-
-		} else {
-			print("completed", pctAlongPath)
-
-			allowTracing = false
-			highestIDX = 0
-
-			// we will only get here if assistiveTouchSwitch is OFF
-			
-			if strokeIndex == strokePathsArray.count-1{
-				dashLayer.removeFromSuperlayer()
-				dashLayer.sublayers?.filter{ $0 is CAShapeLayer }.forEach{ $0.removeFromSuperlayer() }
-				drawingView.clear()
-				
-				return
-			}
-			
-			dashLayer.sublayers?.filter{ $0 is CAShapeLayer }.forEach{ $0.removeFromSuperlayer() }
-			
-			self.strokeIndex+=1
-			showHint()
-			showTutorial()
-
-        }
-
-    }
-
-	
 	func swiftyDraw(shouldBeginDrawingIn drawingView: SwiftyDrawView, using touch: UITouch) -> Bool {
 
-		highestIDX = 0
+		maxIDX = 0
 		
 		var b: Bool = false
 		let point = touch.location(in: drawingView)
 		if pathToHitTestAgainst.contains(point) {
-			if let i = findClosestPointIndex(to: point, in: percentagePoints) {
+			if let i = findClosestPointIndex(to: point, in: pointsAlongPath) {
 				if i <= proximityToStart {
 					b = true
 				}
@@ -250,12 +56,12 @@ class ViewController: UIViewController, SwiftyDrawViewDelegate {
 			return
 		}
 
-		if let i = findClosestPointIndex(to: point, in: percentagePoints) {
-			highestIDX = max(highestIDX, i)
+		if let i = findClosestPointIndex(to: point, in: pointsAlongPath) {
+			maxIDX = max(maxIDX, i)
 		}
 		
 		if assistiveTouchSwitch.isOn {
-			let pctAlongPath = CGFloat(highestIDX) / CGFloat(numPercentagePoints)
+			let pctAlongPath = CGFloat(maxIDX) / CGFloat(numPointsOnPath)
 			
 			if pctAlongPath >= pctNeededToCompleteAssisted {
 				
@@ -308,10 +114,8 @@ class ViewController: UIViewController, SwiftyDrawViewDelegate {
 			CATransaction.commit()
 			return
 		}
-		print(drawingView.drawItems.last?.path)
-		print(drawingView.drawItems.last?.path.length)
-		print(currentPathToTrace.length)
-		let pctAlongPath = CGFloat(highestIDX) / CGFloat(numPercentagePoints)
+
+		let pctAlongPath = CGFloat(maxIDX) / CGFloat(numPointsOnPath)
 
 		if pctAlongPath < pctNeededToCompleteNonAssisted {
 			allowTracing = false
@@ -460,7 +264,6 @@ class ViewController: UIViewController, SwiftyDrawViewDelegate {
 		
         self.view.addSubview(targetView)
         // Do any additional setup after loading the view.
-//        view.backgroundColor = .black
         let path = MyBezierPath(svgPath: "m 17.899207,12.838052 c 24.277086,0 48.554171,0 72.831257,0")
         let path2 = MyBezierPath(svgPath: "m 27.183494,30 c 1.799867,6.703167 5.73525,21.942548 19.10735,25.425821 C 62.18913,58.972955 71.676308,43.806518 56.324843,30 c 8.148778,-0.235038 16.297872,0.3043 24.444458,0")
         let path1 = MyBezierPath(svgPath: "M 81.707208,12.894524 C 81.560683,44.598905 71.417523,97.40583 45.542397,94.433749")
@@ -497,14 +300,6 @@ class ViewController: UIViewController, SwiftyDrawViewDelegate {
 
         self.pathToHitTestAgainst = self.strokePathsArray[0].cgPath.copy(strokingWithWidth: 10, lineCap: .round, lineJoin: .round, miterLimit: 0, transform: defaultTransform)
 
-
-
-
-
-//        showHint()
-//        showTutorial()
-
-
         // or animate all paths then show hint
         animatePath()
 
@@ -513,9 +308,6 @@ class ViewController: UIViewController, SwiftyDrawViewDelegate {
         setUpLayersForAssistiveMode()
 
         self.targetView.layer.addSublayer(self.canvasView.layer)
-
-
-
 
     }
 
@@ -617,21 +409,21 @@ class ViewController: UIViewController, SwiftyDrawViewDelegate {
         }
 
 		// generate array of points along path
-		percentagePoints = []
-		for i in 0...numPercentagePoints {
-			let pct = CGFloat(i) / CGFloat(numPercentagePoints)
+		pointsAlongPath = []
+		for i in 0...numPointsOnPath {
+			let pct = CGFloat(i) / CGFloat(numPointsOnPath)
 			guard let p = currentPathToTrace.point(at: pct) else {
 				fatalError("could not get point at: \(i) / \(pct)")
 			}
-			percentagePoints.append(p)
+			pointsAlongPath.append(p)
 		}
 
 		allowTracing = false
     }
 
-	var percentagePoints: [CGPoint] = []
-	var highestIDX: Int = 0
-	var numPercentagePoints: Int = 100
+	var pointsAlongPath: [CGPoint] = []
+	var maxIDX: Int = 0
+	var numPointsOnPath: Int = 100
 	var proximityToStart: Int = 2
 	var pctNeededToCompleteAssisted: CGFloat = 0.9
 	var pctNeededToCompleteNonAssisted: CGFloat = 0.95
