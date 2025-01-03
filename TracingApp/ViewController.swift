@@ -235,7 +235,7 @@ class ViewController: UIViewController, SwiftyDrawViewDelegate {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-
+		showAlert(title: "Please Note", message: "All changes in this fork are\n\nEXAMPLE CODE ONLY\n\n and are not intended to be, nor should they be considered to be, \"Production Ready\"", dismissAction: self.animatePath)
     }
 
     var currentPathToTrace : CGPath!
@@ -307,7 +307,7 @@ class ViewController: UIViewController, SwiftyDrawViewDelegate {
         self.pathToHitTestAgainst = self.strokePathsArray[0].cgPath.copy(strokingWithWidth: 10, lineCap: .round, lineJoin: .round, miterLimit: 0, transform: defaultTransform)
 
         // or animate all paths then show hint
-        animatePath()
+        //animatePath()
 
 
 
@@ -530,6 +530,15 @@ class ViewController: UIViewController, SwiftyDrawViewDelegate {
 	func findClosestPointIndex(to target: CGPoint, in points: [CGPoint]) -> Int? {
 		guard !points.isEmpty else { return nil }
 		return points.enumerated().min(by: { $0.element.distance(to: target) < $1.element.distance(to: target) })?.offset
+	}
+
+	func showAlert(title: String, message: String, dismissAction: @escaping () -> Void) {
+		let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+		let okAction = UIAlertAction(title: "OK", style: .default) { _ in
+			dismissAction()
+		}
+		alertController.addAction(okAction)
+		self.present(alertController, animated: true, completion: nil)
 	}
 
 }
